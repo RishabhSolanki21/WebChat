@@ -44,9 +44,7 @@ public class MyChannel_Interceptor implements ChannelInterceptor {
             System.out.println("==="+accessor.getCommand()+"===");
             System.out.println("==="+accessor.getUser());
             System.out.println(accessor.getUser().getName());
-            String message1= "fuck off you bastard";
-            System.out.println(message1);
-            accessor.setMessage(message1);
+            
         }
         return MessageBuilder.createMessage(
                 message.getPayload(),
