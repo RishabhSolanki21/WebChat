@@ -17,8 +17,6 @@ public class ChatConfig implements WebSocketMessageBrokerConfigurer {
     @Autowired
     private MyChannel_Interceptor MyChannel_Interceptor;
 
-    @Autowired
-    private HandshakeInterceptor handshakeInterceptor;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
