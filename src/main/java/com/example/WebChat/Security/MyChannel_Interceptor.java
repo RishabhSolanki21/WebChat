@@ -30,15 +30,16 @@ public class MyChannel_Interceptor implements ChannelInterceptor {
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message,StompHeaderAccessor.class);
 
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
+            String token=accessor.getFirstNativeHeader("Authorization");
+            if (token!=null&&token.startsWith("Bearer ")) {
+                token=token.substring(7);
 
-            String username =  accessor.getFirstNativeHeader("username");
-
-            if (username != null) {
-                accessor.setUser(() -> username);
-                System.out.println("Connected: user=" + username);
-            } else {
-                System.out.println("Username is NULL in CONNECT!");
             }
+            else {
+                System.out.println("token is null");
+            }
+
+
         }
         else {
             System.out.println("==="+accessor.getCommand()+"===");
