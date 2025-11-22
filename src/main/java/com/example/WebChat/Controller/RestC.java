@@ -47,10 +47,10 @@ public class RestC {
     public Optional<Users> getUserById(@RequestParam("id") Long id) {
         return userRepo.findById(id);
     }
-    @GetMapping("/getFriend")
-    public Users getFriends(@RequestParam("name") String name) {
-        Optional<Users> user=userRepo.findById(id);
-       String name= user.get().getFriendName(id);
-      return userRepo.findByUsername(name);
-    }
+//    @GetMapping("/getFriend")
+//    public Users getFriends(@RequestParam("name") String name) {
+//        Optional<Users> user=userRepo.findById(id);
+//       String name= user.get().getFriendName(id);
+//      return userRepo.findByUsername(name);
+//    }
 }

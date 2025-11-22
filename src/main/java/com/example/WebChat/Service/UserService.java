@@ -3,6 +3,7 @@ package com.example.WebChat.Service;
 import com.example.WebChat.Entity.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ public class UserService implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(null);
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override
