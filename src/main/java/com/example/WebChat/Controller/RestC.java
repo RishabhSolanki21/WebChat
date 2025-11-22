@@ -32,9 +32,7 @@ public class RestC {
                 .setPassword(bCryptPasswordEncoder.encode(user.getPassword())).build();
         userRepo.save(user1);
         String token=createJwt.createJwt(user1);
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("hii there login before");
-        System.out.println(token+"==>"+auth.getPrincipal());
+        System.out.println("hii there on login");
         System.out.println(token);
         return token;
     }
