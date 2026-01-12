@@ -25,7 +25,6 @@ public class Users {
     String password;
     String content;
     public Users() {
-
     }
 
     public String getPassword() {
@@ -49,6 +48,11 @@ public class Users {
                 .findFirst()
                 .orElse(null);
     }
+    public void setFriendName() {
+        setFriendName();
+    }
+
+
 
     public String getContent() {
         return content;
@@ -61,7 +65,7 @@ public class Users {
         Long id;
         String username;
 
-        List<String>friendsname;
+        List<String>friendsname=new ArrayList<>();
         String password;
         String content;
 

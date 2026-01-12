@@ -28,8 +28,21 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String path = request.getRequestURI();
-        return path.startsWith("/ws")||path.equals("/login")||path.equals("/register");
+        String path = request.getServletPath();
+        String method = request.getMethod();
+        System.out.println("════════════════════════════════════");
+        System.out.println("🔍 JWT Filter Check");
+        System.out.println("📍 Method: " + method);
+        System.out.println("📍 Path: " + path);
+
+        boolean shouldSkip = path.startsWith("/ws") ||
+                path.equals("/login") ||
+                path.equals("/register") ||
+                path.equals("/af");
+
+        System.out.println("❓ Skip filter: " + shouldSkip);
+        System.out.println("════════════════════════════════════");
+        return shouldSkip;
     }
 
     @Override

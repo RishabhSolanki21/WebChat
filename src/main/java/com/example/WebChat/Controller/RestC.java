@@ -6,11 +6,12 @@ import com.example.WebChat.Repository.UserRepo;
 import com.example.WebChat.Security.CreateJwt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Optional;
 
 @RestController
@@ -41,9 +42,15 @@ public class RestC {
         return ResponseEntity.ok(userRepo.existsByUsername(name))       ;
     }
 
-    @GetMapping("/get")
-    public Optional<Users> getUserById(@RequestParam("id") Long id) {
-        return userRepo.findById(id);
+    @PostMapping("/af")
+    public String getUserById(@RequestBody String fname,Principal principal) {
+        System.out.println("friend name===>"+fname);
+        System.out.println(principal.getName());
+        Users user =userRepo.findByUsername(principal.getName());
+        Users user1= new Users.Builder().setFriendsname(fname).build();
+        user.setFriendName();
+        userRepo.save(user);
+        return "friend is saved in db with name " + fname;
     }
 //    @GetMapping("/getFriend")
 //    public Users getFriends(@RequestParam("name") String name) {

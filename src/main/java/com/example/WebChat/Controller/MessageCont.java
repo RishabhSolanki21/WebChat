@@ -22,15 +22,14 @@ public class MessageCont {
         System.out.println(messageCont.getContent());
         simpMessagingTemplate.convertAndSend("/topic/group/" + roomid, messageCont);
         System.out.println(messageCont.getContent());
-        userRepo.save(messageCont);
+//        userRepo.save(messageCont);
         return messageCont.getContent();
     }
-//    @Header("simpSessionAttributes") Map<String, Object> sessionAttributes,
+
 @MessageMapping("/private/message")
 public void privatemessage(@Payload Messagesof messageCont,Principal principal) {
     String actualSender = principal.getName();
     messageCont.setSendername(actualSender);
-
     System.out.println("=== SENDING MESSAGE ===");
     System.out.println("From: " + messageCont.getSendername());
     System.out.println("To: " + messageCont.getReceivername());
