@@ -37,8 +37,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         boolean shouldSkip = path.startsWith("/ws") ||
                 path.equals("/login") ||
-                path.equals("/register") ||
-                path.equals("/af");
+                path.equals("/register") ;
 
         System.out.println("❓ Skip filter: " + shouldSkip);
         System.out.println("════════════════════════════════════");

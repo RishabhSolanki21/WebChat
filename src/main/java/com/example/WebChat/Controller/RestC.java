@@ -29,8 +29,9 @@ public class RestC {
     @PostMapping("/login")
     public String addUser(@RequestBody Users user) {
         System.out.println(user.getUsername()+"==>"+user.getPassword());
-        Users user1 = new Users.Builder().setUsername(user.getUsername())
-                .setPassword(bCryptPasswordEncoder.encode(user.getPassword())).build();
+        Users user1 = new Users();
+        user1.setUsername(user.getUsername());
+        user1.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepo.save(user1);
         String token=createJwt.createJwt(user1);
         System.out.println("hii there on login");
@@ -47,15 +48,8 @@ public class RestC {
         System.out.println("friend name===>"+fname);
         System.out.println(principal.getName());
         Users user =userRepo.findByUsername(principal.getName());
-        Users user1= new Users.Builder().setFriendsname(fname).build();
-        user.setFriendName();
+        user.setFriendsname(fname);
         userRepo.save(user);
         return "friend is saved in db with name " + fname;
     }
-//    @GetMapping("/getFriend")
-//    public Users getFriends(@RequestParam("name") String name) {
-//        Optional<Users> user=userRepo.findById(id);
-//       String name= user.get().getFriendName(id);
-//      return userRepo.findByUsername(name);
-//    }
 }

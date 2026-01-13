@@ -34,7 +34,7 @@ public class MySecurity {
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                         authorizationManagerRequestMatcherRegistry
                                 .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-                                .requestMatchers("/login","/af").permitAll()
+                                .requestMatchers("/login").permitAll()
                                 .requestMatchers("/ws/**").permitAll()
                                 .anyRequest().authenticated())
                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
