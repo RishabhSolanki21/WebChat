@@ -2,9 +2,13 @@ package com.example.WebChat.Controller;
 
 
 import com.example.WebChat.Configurations.ModelMapperConfig;
+import com.example.WebChat.Entity.Chat;
+import com.example.WebChat.Entity.Message;
 import com.example.WebChat.Entity.Messagesof;
 import com.example.WebChat.Entity.Users;
+import com.example.WebChat.Repository.MessageRepo;
 import com.example.WebChat.Repository.UserRepo;
+import com.example.WebChat.Repository.chatRepo;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,24 +25,30 @@ public class MessageCont {
     private SimpMessagingTemplate simpMessagingTemplate;
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private chatRepo chatRepo;
+    @Autowired
+    private MessageRepo messageRepo;
 
     @Autowired
     private ModelMapper modelMapper;
 
     @MessageMapping("/message/{roomid}")
     public void groupmessage(@Payload Users messageCont, @DestinationVariable String roomid) {
-        System.out.println(messageCont.getContent());
+//        System.out.println(messageCont.getContent());
         simpMessagingTemplate.convertAndSend("/topic/group/" + roomid, messageCont);
-        System.out.println(messageCont.getContent());
+//        System.out.println(messageCont.getContent());
     }
 
 @MessageMapping("/private/message")
 @Transactional
 public void privatemessage(@Payload Messagesof messageCont,Principal principal) {
-    String actualSender = principal.getName();
-    Users users=userRepo.findByUsername(actualSender);
-    users.getContent().add(messageCont.getMessage());
-    userRepo.save(users);
+    String senderName = principal.getName();
+    Users sender=userRepo.findByUsername(senderName);
+    Users receiver=userRepo.findByUsername(messageCont.getReceivername());
+    Chat chat=chatRepo.findChatByUsers1AndUsers2(sender,receiver).orElseGet(()->chatRepo.save(new Chat(sender,receiver)));
+    Message message=new Message(sender,chat,messageCont.getMessage());
+    messageRepo.save(message);
     System.out.println("=== SENDING MESSAGE ===");
     System.out.println("To: " + messageCont.getReceivername());
     System.out.println("Message: " + messageCont.getMessage());

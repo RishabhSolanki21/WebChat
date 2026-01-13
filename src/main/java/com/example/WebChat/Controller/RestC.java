@@ -48,7 +48,7 @@ public class RestC {
         System.out.println("friend name===>"+fname);
         System.out.println(principal.getName());
         Users user =userRepo.findByUsername(principal.getName());
-        user.setFriendsname(fname);
+//        user.setFriendsname(fname);
         userRepo.save(user);
         return "friend is saved in db with name " + fname;
     }
