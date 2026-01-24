@@ -1,8 +1,11 @@
 package com.example.WebChat.Controller;
 
 
+import com.example.WebChat.Configurations.ModelMapperConfig;
+import com.example.WebChat.Dto.ChatDto;
 import com.example.WebChat.Entity.Chat;
 import com.example.WebChat.Entity.Users;
+import com.example.WebChat.Repository.MessageRepo;
 import com.example.WebChat.Repository.UserRepo;
 import com.example.WebChat.Repository.chatRepo;
 import com.example.WebChat.Security.CreateJwt;
@@ -23,9 +26,13 @@ public class RestC {
 
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private MessageRepo messageRepo;
 
     @Autowired
     private CreateJwt createJwt;
+    @Autowired
+    private ModelMapperConfig modelMapper;
 
     @Autowired
     private chatRepo chat;
@@ -60,12 +67,13 @@ public class RestC {
     }
 
     @GetMapping("/af")
-    public Optional<List<Chat>> getUserById(Principal principal) {
+    public List<ChatDto> getUserById(Principal principal) {
         String username = principal.getName();
         System.out.println("getting a friends list from db===>"+username);
         Users user = userRepo.findByUsername(username);
-        Optional<List<Chat>> chat1= Optional.of(chat.findChatByUsers1OrUsers2(user, user).stream().toList());
-        System.out.println("chat1====>"+chat1);
-        return chat1;
+        List<Chat> chat1= chat.findChatByUsers1OrUsers2(user, user).stream().toList();
+        List<ChatDto> chatDtoList=modelMapper.modelToDto(chat1,user,messageRepo);
+        System.out.println("chat1====>"+ chat1);
+        return chatDtoList;
     }
 }

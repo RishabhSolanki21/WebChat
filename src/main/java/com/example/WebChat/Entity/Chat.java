@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class Chat {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long chat_id;
+    private Long chatId;
 
     @ManyToOne
     @JoinColumn(name = "users_1_id")
@@ -57,11 +57,11 @@ public class Chat {
         this.users1 = users1;
     }
 
-    public void setChat_id(Long chatId) {
-        this.chat_id = chatId;
+    public void setChatId(Long chatId) {
+        this.chatId = chatId;
     }
 
-    public Long getChat_id() {
-        return chat_id;
+    public Long getChatId() {
+        return chatId;
     }
 }

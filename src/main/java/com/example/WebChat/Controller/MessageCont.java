@@ -1,10 +1,9 @@
 package com.example.WebChat.Controller;
 
 
-import com.example.WebChat.Configurations.ModelMapperConfig;
 import com.example.WebChat.Entity.Chat;
 import com.example.WebChat.Entity.Message;
-import com.example.WebChat.Entity.Messagesof;
+import com.example.WebChat.Dto.MessageDto;
 import com.example.WebChat.Entity.Users;
 import com.example.WebChat.Repository.MessageRepo;
 import com.example.WebChat.Repository.UserRepo;
@@ -14,7 +13,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import java.security.Principal;
 
@@ -42,7 +40,7 @@ public class MessageCont {
 
 @MessageMapping("/private/message")
 @Transactional
-public void privatemessage(@Payload Messagesof messageCont,Principal principal) {
+public void privatemessage(@Payload MessageDto messageCont, Principal principal) {
     String senderName = principal.getName();
     Users sender=userRepo.findByUsername(senderName);
     Users receiver=userRepo.findByUsername(messageCont.getReceivername());

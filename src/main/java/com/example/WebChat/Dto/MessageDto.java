@@ -1,8 +1,8 @@
-package com.example.WebChat.Entity;
+package com.example.WebChat.Dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Messagesof {
+public class MessageDto {
 
     @JsonProperty("sendername")
     String sendername;
@@ -13,13 +13,13 @@ public class Messagesof {
     @JsonProperty("receivername")
     String receivername;
 
-    public Messagesof() {
+    public MessageDto() {
     }
 
-    public Messagesof(String sendername, String message, String receivername) {
+    public MessageDto(String sendername, String message) {
         this.sendername = sendername;
         this.message = message;
-        this.receivername = receivername;
+//        this.receivername = receivername;
     }
     public String getSendername() {
         return sendername;

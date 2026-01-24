@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long message_id;
+    private Long messageId;
 
     @ManyToOne
     @JoinColumn(name = "sender_id")
@@ -35,7 +35,6 @@ public class Message {
     }
 
     public Message() {
-
     }
 
     public Users getSender() {
@@ -45,4 +44,17 @@ public class Message {
     public void setSender(Users sender) {
         this.sender = sender;
     }
+    public Chat getChat() {
+        return chat;
+    }
+    public void setChat(Chat chat) {
+        this.chat = chat;
+    }
+    public String getContent() {
+        return content;
+    }
+    public void setContent(String content) {
+        this.content = content;
+    }
+
 }
