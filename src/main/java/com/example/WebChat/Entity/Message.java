@@ -56,5 +56,11 @@ public class Message {
     public void setContent(String content) {
         this.content = content;
     }
+    public LocalDateTime getTime() {
+        return time;
+    }
+    public void setTime(LocalDateTime time) {
+        this.time = time;
+    }
 
 }

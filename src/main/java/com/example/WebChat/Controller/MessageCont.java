@@ -44,7 +44,7 @@ public void privatemessage(@Payload MessageDto messageCont, Principal principal)
     String senderName = principal.getName();
     Users sender=userRepo.findByUsername(senderName);
     Users receiver=userRepo.findByUsername(messageCont.getReceivername());
-    Chat chat=chatRepo.findChatByUsers1AndUsers2(sender,receiver)
+    Chat chat=chatRepo.findChatByUsers(sender,receiver)
             .orElseGet(()->chatRepo.save(new Chat(sender,receiver)));
     Message message=new Message(sender,chat,messageCont.getMessage());
     messageRepo.save(message);

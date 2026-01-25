@@ -2,6 +2,8 @@ package com.example.WebChat.Dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.LocalDateTime;
+
 public class MessageDto {
 
     @JsonProperty("sendername")
@@ -13,13 +15,16 @@ public class MessageDto {
     @JsonProperty("receivername")
     String receivername;
 
+    LocalDateTime timestamp;
+
     public MessageDto() {
     }
 
-    public MessageDto(String sendername, String message) {
+    public MessageDto(String sendername, String message,String receivername, LocalDateTime timestamp) {
         this.sendername = sendername;
         this.message = message;
-//        this.receivername = receivername;
+        this.receivername = receivername;
+        this.timestamp = timestamp;
     }
     public String getSendername() {
         return sendername;
@@ -38,6 +43,12 @@ public class MessageDto {
     }
     public void setReceivername(String receivername) {
         this.receivername = receivername;
+    }
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
     @Override
     public String toString() {

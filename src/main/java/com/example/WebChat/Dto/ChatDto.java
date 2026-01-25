@@ -29,4 +29,11 @@ public class ChatDto {
     public void setMessageList(List<MessageDto> messageList) {
         this.messageList = messageList;
     }
+    @Override
+    public String toString() {
+        return "ChatDto{" +
+                ", friends='" + friends + '\'' +
+                ", messages='" + messageList + '\'' +
+                '}';
+    }
 }

@@ -22,17 +22,22 @@ public class ModelMapperConfig {
         return new ModelMapper();
     }
 
-    public List<ChatDto> modelToDto(List<Chat> chat, Users users,  MessageRepo messageRepo) {
+    public List<ChatDto> modelToDto(List<Chat> chat, Users currentUser,  MessageRepo messageRepo) {
         List<ChatDto> chatDtos = new ArrayList<>();
         for (Chat chat1 : chat) {
-            Users user= chat1.getUsers1().equals(users)?chat1.getUsers2():chat1.getUsers1();
+            Users friend= chat1.getUsers1().equals(currentUser)?chat1.getUsers2():chat1.getUsers1();
             List<MessageDto> messageList=messageRepo.findByChat_ChatId(chat1.getChatId())
                     .stream().map(
-                    m -> new MessageDto(
-                            m.getSender().getUsername(),m.getContent()
-                    ))
+                    m -> {
+                        String sender=m.getSender().getUsername();
+                        String receiver=m.getSender().getUsername().equals(friend.getUsername())?
+                               currentUser.getUsername(): friend.getUsername();
+                        return new MessageDto(
+                                sender, m.getContent(),receiver, m.getTime()
+                        );
+                    })
                     .collect(Collectors.toList());
-           chatDtos.add(new ChatDto(user.getUsername(),messageList));
+           chatDtos.add(new ChatDto(friend.getUsername(),messageList));
         }
         return chatDtos;
     }

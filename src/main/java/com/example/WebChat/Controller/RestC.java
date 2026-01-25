@@ -71,9 +71,12 @@ public class RestC {
         String username = principal.getName();
         System.out.println("getting a friends list from db===>"+username);
         Users user = userRepo.findByUsername(username);
-        List<Chat> chat1= chat.findChatByUsers1OrUsers2(user, user).stream().toList();
+        List<Chat> chat1= chat.findChatByUsers1OrUsers2(user, user);
         List<ChatDto> chatDtoList=modelMapper.modelToDto(chat1,user,messageRepo);
-        System.out.println("chat1====>"+ chat1);
+        System.out.println("Loop started");
+        for (ChatDto chatDto : chatDtoList) {
+            System.out.println(chatDto.toString());
+        }
         return chatDtoList;
     }
 }
