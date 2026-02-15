@@ -24,7 +24,7 @@ public class CreateJwt {
         credentials.put("id",jwtCredentials.getId());
 
         return Jwts.builder().addClaims(credentials).setSubject(jwtCredentials.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis())).setExpiration(new Date(System.currentTimeMillis()+100000*60))
+                .setIssuedAt(new Date(System.currentTimeMillis())).setExpiration(new Date(System.currentTimeMillis()+60*60*1000))
                 .signWith(getJwtSecret()).compact();
     }
     public SecretKey getJwtSecret() {

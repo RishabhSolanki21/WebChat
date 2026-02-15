@@ -1,5 +1,6 @@
 package com.example.WebChat.Controller;
 
+import com.example.WebChat.Configurations.ThreadImpl;
 import com.example.WebChat.Dto.GroupDto;
 import com.example.WebChat.Entity.PrivateChat;
 import com.example.WebChat.Dto.PrivateMessageDto;
@@ -29,11 +30,13 @@ public class MessageCont {
     private ChatRepo chatRepo;
     @Autowired
     private MessageRepo messageRepo;
-
+    @Autowired
+    private ThreadImpl thread;
 
     @MessageMapping("/message/{roomid}")
-    public void groupmessage(@Payload GroupDto dto, @DestinationVariable String roomid) {
-        log.debug(String.valueOf(dto));
+    public void groupmessage(@Payload GroupDto dto, @DestinationVariable String roomid) throws InterruptedException {
+        log.info(String.valueOf(dto));
+//        thread.sleep(2000);
         simpMessagingTemplate.convertAndSend("/topic/group/" + roomid,dto);
     }
 

@@ -7,6 +7,7 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -34,17 +35,17 @@ public class ChatConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
        registration.interceptors(MyChannel_Interceptor);
-//        registration.taskExecutor().corePoolSize(4).maxPoolSize(8);
+        registration.taskExecutor().corePoolSize(1).maxPoolSize(2);
     }
-//    @Override
-//    public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
-//        registration.setMessageSizeLimit(64 * 1024); // 64KB
-//        registration.setSendBufferSizeLimit(512 * 1024); // 512KB
-//        registration.setSendTimeLimit(20000); // 20s
-//    }
-//
-//    @Override
-//    public void configureClientOutboundChannel(ChannelRegistration registration) {
-//        registration.taskExecutor().corePoolSize(4).maxPoolSize(8);
-//    }
+    @Override
+    public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
+        registration.setMessageSizeLimit(500);
+        registration.setSendBufferSizeLimit(500);
+        registration.setSendTimeLimit(100);
+    }
+
+    @Override
+    public void configureClientOutboundChannel(ChannelRegistration registration) {
+        registration.taskExecutor().corePoolSize(1).maxPoolSize(2);
+    }
 }
