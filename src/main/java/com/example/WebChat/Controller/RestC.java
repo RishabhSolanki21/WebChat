@@ -1,20 +1,16 @@
 package com.example.WebChat.Controller;
 
-
 import com.example.WebChat.Configurations.ModelMapperConfig;
-import com.example.WebChat.Dto.ChatDto;
-import com.example.WebChat.Entity.Chat;
+import com.example.WebChat.Dto.PrivateChatDto;
+import com.example.WebChat.Entity.PrivateChat;
 import com.example.WebChat.Entity.Users;
 import com.example.WebChat.Repository.MessageRepo;
 import com.example.WebChat.Repository.UserRepo;
-import com.example.WebChat.Repository.chatRepo;
 import com.example.WebChat.Security.CreateJwt;
+import com.example.WebChat.Service.ChatRepoAccess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -35,7 +31,7 @@ public class RestC {
     private ModelMapperConfig modelMapper;
 
     @Autowired
-    private chatRepo chat;
+    private ChatRepoAccess chat;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -67,14 +63,14 @@ public class RestC {
     }
 
     @GetMapping("/af")
-    public List<ChatDto> getUserById(Principal principal) {
+    public List<PrivateChatDto> getUserById(Principal principal) {
         String username = principal.getName();
         System.out.println("getting a friends list from db===>"+username);
         Users user = userRepo.findByUsername(username);
-        List<Chat> chat1= chat.findChatByUsers1OrUsers2(user, user);
-        List<ChatDto> chatDtoList=modelMapper.modelToDto(chat1,user,messageRepo);
+        List<PrivateChat> chat1= chat.findfindChatByUsers1OrUsers2(user, user);
+        List<PrivateChatDto> chatDtoList=modelMapper.modelToDto(chat1,user,messageRepo);
         System.out.println("Loop started");
-        for (ChatDto chatDto : chatDtoList) {
+        for (PrivateChatDto chatDto : chatDtoList) {
             System.out.println(chatDto.toString());
         }
         return chatDtoList;

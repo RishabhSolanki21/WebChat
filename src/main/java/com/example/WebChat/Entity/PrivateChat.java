@@ -6,10 +6,10 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Chats",
+@Table(name = "private_chats",
         uniqueConstraints = @UniqueConstraint(columnNames = {"users_1_id","users_2_id"})
 )
-public class Chat {
+public class PrivateChat {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long chatId;
@@ -26,7 +26,7 @@ public class Chat {
     @Column(nullable = false,updatable = false)
     private LocalDateTime time;
 
-    public Chat(Users sender, Users receiver) {
+    public PrivateChat(Users sender, Users receiver) {
         if (sender.getId()< receiver.getId()){
             this.users1=sender;
             this.users2=receiver;
@@ -37,7 +37,7 @@ public class Chat {
         }
     }
 
-    public Chat() {
+    public PrivateChat() {
 
     }
 

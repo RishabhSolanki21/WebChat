@@ -1,20 +1,22 @@
 package com.example.WebChat.Dto;
-
-import com.example.WebChat.Entity.Message;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-public class ChatDto {
 
+public class PrivateChatDto {
+
+    @JsonProperty("friends")
     private String friends;
-    private List<MessageDto> messageList;
+    @JsonProperty("MessageList")
+    private List<PrivateMessageDto> messageList;
 
-    public ChatDto(String friends, List<MessageDto> messageList) {
+    public PrivateChatDto(String friends, List<PrivateMessageDto> messageList) {
         this.friends = friends;
         this.messageList = messageList;
     }
 
-    public ChatDto() {
+    public PrivateChatDto() {
     }
 
     public String getFriends() {
@@ -23,10 +25,10 @@ public class ChatDto {
     public void setFriends(String friends) {
         this.friends = friends;
     }
-    public List<MessageDto> getMessageList() {
+    public List<PrivateMessageDto> getMessageList() {
         return messageList;
     }
-    public void setMessageList(List<MessageDto> messageList) {
+    public void setMessageList(List<PrivateMessageDto> messageList) {
         this.messageList = messageList;
     }
     @Override

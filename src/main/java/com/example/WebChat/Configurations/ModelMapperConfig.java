@@ -1,9 +1,8 @@
 package com.example.WebChat.Configurations;
 
-import com.example.WebChat.Dto.ChatDto;
-import com.example.WebChat.Dto.MessageDto;
-import com.example.WebChat.Entity.Chat;
-import com.example.WebChat.Entity.Message;
+import com.example.WebChat.Dto.PrivateChatDto;
+import com.example.WebChat.Dto.PrivateMessageDto;
+import com.example.WebChat.Entity.PrivateChat;
 import com.example.WebChat.Entity.Users;
 import com.example.WebChat.Repository.MessageRepo;
 import org.modelmapper.ModelMapper;
@@ -22,22 +21,22 @@ public class ModelMapperConfig {
         return new ModelMapper();
     }
 
-    public List<ChatDto> modelToDto(List<Chat> chat, Users currentUser,  MessageRepo messageRepo) {
-        List<ChatDto> chatDtos = new ArrayList<>();
-        for (Chat chat1 : chat) {
+    public List<PrivateChatDto> modelToDto(List<PrivateChat> chat, Users currentUser, MessageRepo messageRepo) {
+        List<PrivateChatDto> chatDtos = new ArrayList<>();
+        for (PrivateChat chat1 : chat) {
             Users friend= chat1.getUsers1().equals(currentUser)?chat1.getUsers2():chat1.getUsers1();
-            List<MessageDto> messageList=messageRepo.findByChat_ChatId(chat1.getChatId())
+            List<PrivateMessageDto> messageList=messageRepo.findByChat_ChatId(chat1.getChatId())
                     .stream().map(
                     m -> {
                         String sender=m.getSender().getUsername();
                         String receiver=m.getSender().getUsername().equals(friend.getUsername())?
                                currentUser.getUsername(): friend.getUsername();
-                        return new MessageDto(
+                        return new PrivateMessageDto(
                                 sender, m.getContent(),receiver, m.getTime()
                         );
                     })
                     .collect(Collectors.toList());
-           chatDtos.add(new ChatDto(friend.getUsername(),messageList));
+           chatDtos.add(new PrivateChatDto(friend.getUsername(),messageList));
         }
         return chatDtos;
     }

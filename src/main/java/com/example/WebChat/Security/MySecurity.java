@@ -45,13 +45,13 @@ public class MySecurity {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // frontend origin
+        configuration.setAllowedOriginPatterns(List.of("http://localhost:5173","http://192.168.1.65:5173"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
         System.out.println("corsConfigurationSource called ");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // global
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 

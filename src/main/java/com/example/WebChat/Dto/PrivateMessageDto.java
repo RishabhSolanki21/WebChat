@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
 
-public class MessageDto {
+public class PrivateMessageDto {
 
     @JsonProperty("sendername")
     String sendername;
@@ -17,10 +17,10 @@ public class MessageDto {
 
     LocalDateTime timestamp;
 
-    public MessageDto() {
+    public PrivateMessageDto() {
     }
 
-    public MessageDto(String sendername, String message,String receivername, LocalDateTime timestamp) {
+    public PrivateMessageDto(String sendername, String message, String receivername, LocalDateTime timestamp) {
         this.sendername = sendername;
         this.message = message;
         this.receivername = receivername;

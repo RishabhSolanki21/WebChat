@@ -1,13 +1,12 @@
 package com.example.WebChat.Repository;
 
-import com.example.WebChat.Entity.Message;
-import org.springframework.data.domain.Limit;
+import com.example.WebChat.Entity.PrivateMessage;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface MessageRepo extends JpaRepository<Message,Long> {
+public interface MessageRepo extends JpaRepository<PrivateMessage,Long> {
 
-    List<Message> findByChat_ChatId(Long chatChatId);
+    List<PrivateMessage> findByChat_ChatId(Long chatChatId);
 
 }

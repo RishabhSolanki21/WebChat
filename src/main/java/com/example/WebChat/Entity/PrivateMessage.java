@@ -6,9 +6,9 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
-@Table(name = "Messages")
+@Table(name = "private_messages")
 @Entity
-public class Message {
+public class PrivateMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long messageId;
@@ -19,7 +19,7 @@ public class Message {
 
     @ManyToOne
     @JoinColumn(name = "Chat_id")
-    private Chat chat;
+    private PrivateChat chat;
     @Column(name = "Message",nullable = false)
     private String content;
 
@@ -27,14 +27,14 @@ public class Message {
     @Column(nullable = false,updatable = false)
     private LocalDateTime time;
 
-    public Message(Users sender, Chat chat, String message) {
+    public PrivateMessage(Users sender, PrivateChat chat, String message) {
         this.sender=sender;
         this.chat=chat;
         this.content=message;
 
     }
 
-    public Message() {
+    public PrivateMessage() {
     }
 
     public Users getSender() {
@@ -44,10 +44,10 @@ public class Message {
     public void setSender(Users sender) {
         this.sender = sender;
     }
-    public Chat getChat() {
+    public PrivateChat getChat() {
         return chat;
     }
-    public void setChat(Chat chat) {
+    public void setChat(PrivateChat chat) {
         this.chat = chat;
     }
     public String getContent() {
