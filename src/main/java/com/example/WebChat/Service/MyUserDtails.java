@@ -11,13 +11,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class MyUserDtails implements UserDetailsService {
 
-    @Autowired
-    private UserRepo userRepo;
-
+    private final UserRepoAccess userRepo;
+    MyUserDtails(UserRepoAccess userRepo) {
+        this.userRepo = userRepo;
+    }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) {
+        System.out.println("loadUserByUsername " + username);
         Users user = userRepo.findByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("invalid username or password");
+        }
         return new UserService(user);
     }
 }

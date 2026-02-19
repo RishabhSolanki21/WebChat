@@ -1,5 +1,6 @@
 package com.example.WebChat.Security;
 
+import com.example.WebChat.CustomException.CustomLoginException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,8 @@ public class MySecurity {
 
     @Autowired
     private JwtFilter jwtFilter;
+    @Autowired
+    private CustomLoginException customLoginException;
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
@@ -37,6 +40,7 @@ public class MySecurity {
                                 .requestMatchers("/login","/register").permitAll()
                                 .requestMatchers("/ws/**").permitAll()
                                 .anyRequest().authenticated())
+               .exceptionHandling(ex->ex.authenticationEntryPoint(customLoginException))
                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                .build();

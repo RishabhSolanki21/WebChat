@@ -17,13 +17,11 @@ public class CreateJwt {
 
     protected final static String JWT_SECRET = "mysupersecretkeywithwhatthefuckf3jcogrvftfgrgfddsertfftjvmiui";
 
-    public String createJwt(Users jwtCredentials){
+    public String createJwt(String jwtCredentials){
         Map<String,Object> credentials=new HashMap<>();
-        credentials.put("username",jwtCredentials.getUsername());
-        System.out.println("jwt user id=>"+jwtCredentials.getId());
-        credentials.put("id",jwtCredentials.getId());
+        credentials.put("username",jwtCredentials);
 
-        return Jwts.builder().addClaims(credentials).setSubject(jwtCredentials.getUsername())
+        return Jwts.builder().addClaims(credentials).setSubject(jwtCredentials)
                 .setIssuedAt(new Date(System.currentTimeMillis())).setExpiration(new Date(System.currentTimeMillis()+60*60*1000))
                 .signWith(getJwtSecret()).compact();
     }
