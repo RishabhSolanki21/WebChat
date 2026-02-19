@@ -16,7 +16,6 @@ public class ChatConfig implements WebSocketMessageBrokerConfigurer {
     @Autowired
     private MyChannel_Interceptor MyChannel_Interceptor;
 
-
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
@@ -31,7 +30,6 @@ public class ChatConfig implements WebSocketMessageBrokerConfigurer {
         registry.setUserDestinationPrefix("/user");
     }
 
-
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
        registration.interceptors(MyChannel_Interceptor);
@@ -39,9 +37,9 @@ public class ChatConfig implements WebSocketMessageBrokerConfigurer {
     }
     @Override
     public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
-        registration.setMessageSizeLimit(500);
-        registration.setSendBufferSizeLimit(500);
-        registration.setSendTimeLimit(100);
+        registration.setMessageSizeLimit(5*1024);
+        registration.setSendBufferSizeLimit(50*1024);
+        registration.setSendTimeLimit(10000);
     }
 
     @Override

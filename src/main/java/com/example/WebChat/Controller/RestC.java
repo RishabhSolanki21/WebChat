@@ -4,7 +4,7 @@ import com.example.WebChat.Configurations.ModelMapperConfig;
 import com.example.WebChat.Dto.PrivateChatDto;
 import com.example.WebChat.Entity.PrivateChat;
 import com.example.WebChat.Entity.Users;
-import com.example.WebChat.Repository.MessageRepo;
+import com.example.WebChat.Repository.PvtMessageRepo;
 import com.example.WebChat.Repository.UserRepo;
 import com.example.WebChat.Security.CreateJwt;
 import com.example.WebChat.Service.ChatRepoAccess;
@@ -23,7 +23,7 @@ public class RestC {
     @Autowired
     private UserRepo userRepo;
     @Autowired
-    private MessageRepo messageRepo;
+    private PvtMessageRepo messageRepo;
 
     @Autowired
     private CreateJwt createJwt;

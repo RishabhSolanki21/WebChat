@@ -4,7 +4,7 @@ import com.example.WebChat.Dto.PrivateChatDto;
 import com.example.WebChat.Dto.PrivateMessageDto;
 import com.example.WebChat.Entity.PrivateChat;
 import com.example.WebChat.Entity.Users;
-import com.example.WebChat.Repository.MessageRepo;
+import com.example.WebChat.Repository.PvtMessageRepo;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +21,7 @@ public class ModelMapperConfig {
         return new ModelMapper();
     }
 
-    public List<PrivateChatDto> modelToDto(List<PrivateChat> chat, Users currentUser, MessageRepo messageRepo) {
+    public List<PrivateChatDto> modelToDto(List<PrivateChat> chat, Users currentUser, PvtMessageRepo messageRepo) {
         List<PrivateChatDto> chatDtos = new ArrayList<>();
         for (PrivateChat chat1 : chat) {
             Users friend= chat1.getUsers1().equals(currentUser)?chat1.getUsers2():chat1.getUsers1();

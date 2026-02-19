@@ -16,6 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 
 @Component
 public class MyChannel_Interceptor implements ChannelInterceptor {
@@ -50,8 +52,7 @@ public class MyChannel_Interceptor implements ChannelInterceptor {
         else {
             System.out.println("==="+accessor.getCommand()+"===");
             System.out.println("==="+accessor.getUser());
-            System.out.println(accessor.getUser().getName());
-
+            System.out.println(Objects.requireNonNull(accessor.getUser()).getName());
         }
         return MessageBuilder.createMessage(
                 message.getPayload(),
