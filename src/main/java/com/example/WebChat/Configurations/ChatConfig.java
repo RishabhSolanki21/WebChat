@@ -33,17 +33,16 @@ public class ChatConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
        registration.interceptors(MyChannel_Interceptor);
-        registration.taskExecutor().corePoolSize(1).maxPoolSize(2);
+        registration.taskExecutor().corePoolSize(4).maxPoolSize(10).queueCapacity(10);
     }
     @Override
     public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
-        registration.setMessageSizeLimit(5*1024);
-        registration.setSendBufferSizeLimit(50*1024);
+        registration.setMessageSizeLimit(1024);
+        registration.setSendBufferSizeLimit(2*1024);
         registration.setSendTimeLimit(10000);
     }
-
     @Override
     public void configureClientOutboundChannel(ChannelRegistration registration) {
-        registration.taskExecutor().corePoolSize(1).maxPoolSize(2);
+        registration.taskExecutor().corePoolSize(4).maxPoolSize(10).queueCapacity(10);
     }
 }
