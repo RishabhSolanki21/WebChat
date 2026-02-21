@@ -1,6 +1,7 @@
 package com.example.WebChat.Controller;
 
 import com.example.WebChat.Configurations.ModelMapperConfig;
+import com.example.WebChat.CustomException.BadCredential;
 import com.example.WebChat.Dto.PrivateChatDto;
 import com.example.WebChat.Entity.PrivateChat;
 import com.example.WebChat.Entity.Users;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
@@ -63,14 +65,18 @@ public class RestC {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody Users user){
         System.out.println(user.getUsername()+"==>"+user.getPassword());
-        Authentication authentication=authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        user.getUsername(),user.getPassword()
-                )
-        );
-        logger.info("hii there on login {}",authentication.getName());
-        String token=createJwt.createJwt(authentication.getName());
-        return ResponseEntity.ok().body(token);
+        try{
+            Authentication authentication=authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            user.getUsername(),user.getPassword()
+                    )
+            );
+            logger.info("hii there on login {}",authentication.getName());
+            String token=createJwt.createJwt(authentication.getName());
+            return ResponseEntity.ok().body(token);
+        }catch (BadCredentialsException e){
+            throw new BadCredential("Bad credentials");
+        }
     }
     @GetMapping("/get/{name}")
     public ResponseEntity<Boolean> getUser(@PathVariable String name) {

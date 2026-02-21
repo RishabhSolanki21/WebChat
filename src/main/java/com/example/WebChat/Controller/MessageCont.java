@@ -5,16 +5,12 @@ import com.example.WebChat.Entity.PrivateChat;
 import com.example.WebChat.Dto.PrivateMessageDto;
 import com.example.WebChat.Entity.PrivateMessage;
 import com.example.WebChat.Entity.Users;
-import com.example.WebChat.Repository.PvtMessageRepo;
-import com.example.WebChat.Repository.UserRepo;
-import com.example.WebChat.Repository.ChatRepo;
 import com.example.WebChat.Service.ChatRepoAccess;
 import com.example.WebChat.Service.PvtMessageRepoAccess;
 import com.example.WebChat.Service.UserRepoAccess;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,7 +47,7 @@ public class MessageCont {
     }
     @MessageMapping("/private/message")
     @Transactional
-    public void privatemessage(@Payload PrivateMessageDto messageCont, Principal principal) throws InterruptedException {
+    public void privatemessage(@Payload PrivateMessageDto messageCont, Principal principal){
         {
             String senderName = principal.getName();
             Users sender = userRepo.findByUsername(senderName);
