@@ -36,15 +36,14 @@ public class MessageCont {
     @MessageMapping("/message/{roomid}")
     public void groupmessage(@Payload GroupDto dto, @DestinationVariable String roomid) throws InterruptedException {
         log.info("Thread: {}", Thread.currentThread().getName());
-        log.info("Time: {}", System.currentTimeMillis());
         if(roomid.equals("789")){
             Thread.sleep(5000);
         }
         log.info("Thread: {}",Thread.currentThread().getName());
-        log.info("Time: {}",System.currentTimeMillis());
         log.info("roomid: {} with message {}", roomid, dto.getMessage());
         simpMessagingTemplate.convertAndSend("/topic/group/" + roomid, dto);
     }
+
     @MessageMapping("/private/message")
     @Transactional
     public void privatemessage(@Payload PrivateMessageDto messageCont, Principal principal){
