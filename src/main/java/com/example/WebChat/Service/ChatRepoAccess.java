@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -29,7 +30,7 @@ public class ChatRepoAccess {
         try {
            List<PrivateChat>chats= chatRepo.findChatByUsers1OrUsers2(user1, user2);
            if (chats==null||chats.isEmpty()) {
-               throw new ChatNotFoundException("No chats found");
+               return Collections.emptyList();
            }
            return chats;
         }catch (DataAccessException e){

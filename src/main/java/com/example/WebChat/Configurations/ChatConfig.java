@@ -33,7 +33,7 @@ public class ChatConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
        registration.interceptors(MyChannel_Interceptor);
-        //By default 16 threads are used
+//        By default, 16 threads are used
         registration.taskExecutor().corePoolSize(4).maxPoolSize(10).queueCapacity(10);
     }
     @Override

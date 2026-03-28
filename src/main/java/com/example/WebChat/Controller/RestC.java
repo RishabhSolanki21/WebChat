@@ -24,6 +24,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,11 +91,15 @@ public class RestC {
         System.out.println("getting a friends list from db===>"+username);
         Users user = userRepo.findByUsername(username);
         List<PrivateChat> chat1= chat.findChatByUsers1OrUsers2(user, user);
+        if (chat1 == null || chat1.isEmpty()) {
+            System.out.println("No chats found for user: " + username);
+            return ResponseEntity.ok(Collections.emptyList());
+        }
         List<PrivateChatDto> chatDtoList=modelMapper.modelToDto(chat1,user,messageRepo);
         System.out.println("Loop started");
         for (PrivateChatDto chatDto : chatDtoList) {
             System.out.println(chatDto.toString());
         }
-        return ResponseEntity.ok().body(chatDtoList);
+        return ResponseEntity.ok(chatDtoList);
     }
 }
