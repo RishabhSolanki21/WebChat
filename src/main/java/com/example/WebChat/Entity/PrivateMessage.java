@@ -2,12 +2,16 @@ package com.example.WebChat.Entity;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
 @Table(name = "private_messages")
 @Entity
+@Setter
+@Getter
 public class PrivateMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -36,31 +40,4 @@ public class PrivateMessage {
 
     public PrivateMessage() {
     }
-
-    public Users getSender() {
-        return sender;
-    }
-
-    public void setSender(Users sender) {
-        this.sender = sender;
-    }
-    public PrivateChat getChat() {
-        return chat;
-    }
-    public void setChat(PrivateChat chat) {
-        this.chat = chat;
-    }
-    public String getContent() {
-        return content;
-    }
-    public void setContent(String content) {
-        this.content = content;
-    }
-    public LocalDateTime getTime() {
-        return time;
-    }
-    public void setTime(LocalDateTime time) {
-        this.time = time;
-    }
-
 }

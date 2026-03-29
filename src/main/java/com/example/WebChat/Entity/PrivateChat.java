@@ -1,6 +1,8 @@
 package com.example.WebChat.Entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -9,6 +11,8 @@ import java.time.LocalDateTime;
 @Table(name = "private_chats",
         uniqueConstraints = @UniqueConstraint(columnNames = {"users_1_id","users_2_id"})
 )
+@Getter
+@Setter
 public class PrivateChat {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -39,29 +43,5 @@ public class PrivateChat {
 
     public PrivateChat() {
 
-    }
-
-    public Users getUsers2() {
-        return users2;
-    }
-
-    public void setUsers2(Users users2) {
-        this.users2 = users2;
-    }
-
-    public Users getUsers1() {
-        return users1;
-    }
-
-    public void setUsers1(Users users1) {
-        this.users1 = users1;
-    }
-
-    public void setChatId(Long chatId) {
-        this.chatId = chatId;
-    }
-
-    public Long getChatId() {
-        return chatId;
     }
 }

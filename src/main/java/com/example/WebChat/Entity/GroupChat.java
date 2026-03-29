@@ -21,10 +21,6 @@ public class GroupChat {
     }
     public GroupChat() {}
 
-    public void setGroupChat_Id(Long groupChatId) {
-        this.groupChat_Id = groupChatId;
-    }
-
     public Long getGroupChat_Id() {
         return groupChat_Id;
     }
