@@ -9,6 +9,7 @@ import com.example.WebChat.Service.ChatRepoAccess;
 import com.example.WebChat.Service.PvtMessageRepoAccess;
 import com.example.WebChat.Service.UserRepoAccess;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.*;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.security.Principal;
 
 @RestController
+@AllArgsConstructor
 public class MessageCont {
 
     private static final Logger log = LoggerFactory.getLogger(MessageCont.class);
@@ -25,28 +27,21 @@ public class MessageCont {
     private final UserRepoAccess userRepo;
     private final ChatRepoAccess chatRepo;
     private final PvtMessageRepoAccess messageRepo;
-    MessageCont(UserRepoAccess userRepo, SimpMessagingTemplate simpMessagingTemplate,
-                ChatRepoAccess chatRepo, PvtMessageRepoAccess messageRepo) {
-        this.userRepo = userRepo;
-        this.simpMessagingTemplate = simpMessagingTemplate;
-        this.chatRepo = chatRepo;
-        this.messageRepo = messageRepo;
-    }
 
     @MessageMapping("/message/{roomid}")
-    public void groupmessage(@Payload GroupDto dto, @DestinationVariable String roomid) throws InterruptedException {
-        log.info("Thread: {}", Thread.currentThread().getName());
+    public void groupMessage(@Payload GroupDto dto, @DestinationVariable String roomid) throws InterruptedException {
+        log.info("Thread: {}",Thread.currentThread().getName());
         if(roomid.equals("789")){
             Thread.sleep(5000);
         }
         log.info("Thread: {}",Thread.currentThread().getName());
-        log.info("roomid: {} with message {}", roomid, dto.getMessage());
+        log.info("room_id: {} with message {}", roomid, dto.getMessage());
         simpMessagingTemplate.convertAndSend("/topic/group/" + roomid, dto);
     }
 
     @MessageMapping("/private/message")
     @Transactional
-    public void privatemessage(@Payload PrivateMessageDto messageCont, Principal principal){
+    public void privateMessage(@Payload PrivateMessageDto messageCont, Principal principal){
         {
             String senderName = principal.getName();
             Users sender = userRepo.findByUsername(senderName);

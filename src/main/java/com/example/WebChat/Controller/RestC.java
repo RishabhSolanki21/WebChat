@@ -9,64 +9,51 @@ import com.example.WebChat.Repository.PvtMessageRepo;
 import com.example.WebChat.Repository.UserRepo;
 import com.example.WebChat.Security.CreateJwt;
 import com.example.WebChat.Service.ChatRepoAccess;
+import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
+@AllArgsConstructor
 public class RestC {
 
-    @Autowired
-    private UserRepo userRepo;
-    @Autowired
-    private PvtMessageRepo messageRepo;
+    private final UserRepo userRepo;
+    private final PvtMessageRepo messageRepo;
 
-    @Autowired
-    private CreateJwt createJwt;
-    @Autowired
-    private ModelMapperConfig modelMapper;
+    private final CreateJwt createJwt;
+    private final ModelMapperConfig modelMapper;
+    private final ChatRepoAccess chat;
 
-    @Autowired
-    private ChatRepoAccess chat;
-
-    @Autowired
     private static final Logger logger= LogManager.getLogger(RestC.class);
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
     public String Register(@RequestBody Users user) {
-        System.out.println(user.getUsername()+"==>"+user.getPassword());
+        logger.info("{}==>{}",user.getPassword(),user.getUsername());
         Users user1 = new Users();
         user1.setUsername(user.getUsername());
         user1.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepo.save(user1);
         String token=createJwt.createJwt(user1.getUsername());
-        System.out.println("hii there on login");
-        System.out.println(token);
+        logger.info("hii there on registration");
+        logger.info(token);
         return token;
     }
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody Users user){
-        System.out.println(user.getUsername()+"==>"+user.getPassword());
+        logger.info("{}==> {}",user.getUsername(),user.getPassword());
         try{
             Authentication authentication=authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -88,17 +75,17 @@ public class RestC {
     @GetMapping("/af")
     public ResponseEntity<List<PrivateChatDto>> getUserById(Principal principal) {
         String username = principal.getName();
-        System.out.println("getting a friends list from db===>"+username);
+        logger.info("getting a friends list from db===>{}",username);
         Users user = userRepo.findByUsername(username);
         List<PrivateChat> chat1= chat.findChatByUsers1OrUsers2(user, user);
         if (chat1 == null || chat1.isEmpty()) {
-            System.out.println("No chats found for user: " + username);
+            logger.info("No chats found for user: {}",username);
             return ResponseEntity.ok(Collections.emptyList());
         }
         List<PrivateChatDto> chatDtoList=modelMapper.modelToDto(chat1,user,messageRepo);
-        System.out.println("Loop started");
+        logger.info("Loop started");
         for (PrivateChatDto chatDto : chatDtoList) {
-            System.out.println(chatDto.toString());
+            logger.info(chatDto.toString());
         }
         return ResponseEntity.ok(chatDtoList);
     }

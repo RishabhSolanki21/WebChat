@@ -1,6 +1,6 @@
 package com.example.WebChat.Configurations;
 import com.example.WebChat.Security.MyChannel_Interceptor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -11,10 +11,10 @@ import org.springframework.web.socket.config.annotation.WebSocketTransportRegist
 
 @Configuration
 @EnableWebSocketMessageBroker
+@AllArgsConstructor
 public class ChatConfig implements WebSocketMessageBrokerConfigurer {
 
-    @Autowired
-    private MyChannel_Interceptor MyChannel_Interceptor;
+    private final MyChannel_Interceptor MyChannel_Interceptor;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
