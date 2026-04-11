@@ -13,6 +13,8 @@ public class PrivateChatDto {
 
     @JsonProperty("friends")
     private String friends;
+    @JsonProperty("chatId")
+    Long chatId;
     @JsonProperty("MessageList")
     private List<PrivateMessageDto> messageList;
 

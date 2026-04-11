@@ -17,5 +17,6 @@ public interface ChatRepo extends JpaRepository<PrivateChat,Long> {
     Optional<PrivateChat> findChatByUsers(@Param("user1") Users user1,
                                           @Param("user2") Users user2);
 
+
     List<PrivateChat> findChatByUsers1OrUsers2(Users users1, Users users2);
 }

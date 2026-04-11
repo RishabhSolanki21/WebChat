@@ -4,6 +4,7 @@ package com.example.WebChat.Entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @Setter
 @Getter
+@ToString
 public class PrivateMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

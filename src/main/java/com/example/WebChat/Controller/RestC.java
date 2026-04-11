@@ -4,11 +4,13 @@ import com.example.WebChat.Configurations.ModelMapperConfig;
 import com.example.WebChat.CustomException.BadCredential;
 import com.example.WebChat.Dto.PrivateChatDto;
 import com.example.WebChat.Entity.PrivateChat;
+import com.example.WebChat.Entity.PrivateMessage;
 import com.example.WebChat.Entity.Users;
 import com.example.WebChat.Repository.PvtMessageRepo;
 import com.example.WebChat.Repository.UserRepo;
 import com.example.WebChat.Security.CreateJwt;
 import com.example.WebChat.Service.ChatRepoAccess;
+import com.example.WebChat.Service.MessageRepoAccess;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,8 +21,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,6 +42,8 @@ public class RestC {
     private static final Logger logger= LogManager.getLogger(RestC.class);
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final WebClient client = WebClient.create();
+    private final MessageRepoAccess messageRepoAccess;
 
     @PostMapping("/register")
     public String Register(@RequestBody Users user) {
@@ -73,8 +79,15 @@ public class RestC {
     }
 
     @GetMapping("/af")
-    public ResponseEntity<List<PrivateChatDto>> getUserById(Principal principal) {
-        String username = principal.getName();
+    public ResponseEntity<?> getUserById(Principal principal,
+                                         @RequestParam(name="chatId",required = false) Long chatId,
+                                         @RequestParam(name = "selectedF",required = false)String friendName,
+                                         @RequestParam(required = false) Long cursor,
+                                         @RequestParam(required = false, defaultValue = "10") Integer ps,
+                                         @RequestParam(required = false,defaultValue = "0")Integer pn
+    ) {
+        if (friendName==null){
+            String username = principal.getName();
         logger.info("getting a friends list from db===>{}",username);
         Users user = userRepo.findByUsername(username);
         List<PrivateChat> chat1= chat.findChatByUsers1OrUsers2(user, user);
@@ -82,11 +95,31 @@ public class RestC {
             logger.info("No chats found for user: {}",username);
             return ResponseEntity.ok(Collections.emptyList());
         }
-        List<PrivateChatDto> chatDtoList=modelMapper.modelToDto(chat1,user,messageRepo);
+        List<PrivateChatDto> chatDtoList=modelMapper.modelToDto(chat1,user,ps,pn);
         logger.info("Loop started");
         for (PrivateChatDto chatDto : chatDtoList) {
             logger.info(chatDto.toString());
         }
         return ResponseEntity.ok(chatDtoList);
+        }
+        else {
+            logger.info("getting a friends list from db===>{} {} {} {}",friendName,cursor,ps,pn);
+            Users user = userRepo.findByUsername(friendName);
+            List<PrivateMessage> message=messageRepoAccess.findByChat_ChatId(chatId,ps,cursor,pn);
+            logger.info("pagination messages");
+            for (PrivateMessage message1 : message) {
+                logger.info(message1.toString());
+            }
+            return ResponseEntity.ok(message);
+        }
+    }//id content time
+
+    @GetMapping("/extApi")
+    public String externalApi(){
+       return client.get()
+                .uri("www.fuck_off.com")
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
     }
 }

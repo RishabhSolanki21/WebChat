@@ -12,6 +12,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PrivateMessageDto {
 
+    @JsonProperty("messageId")
+    Long id;
+
     @JsonProperty("sendername")
     String sendername;
 
