@@ -104,13 +104,7 @@ public class RestC {
         }
         else {
             logger.info("getting a friends list from db===>{} {} {} {}",friendName,cursor,ps,pn);
-            Users user = userRepo.findByUsername(friendName);
-            List<PrivateMessage> message=messageRepoAccess.findByChat_ChatId(chatId,ps,cursor,pn);
-            logger.info("pagination messages");
-            for (PrivateMessage message1 : message) {
-                logger.info(message1.toString());
-            }
-            return ResponseEntity.ok(message);
+            return ResponseEntity.ok(modelMapper.modelMapper(chatId,ps,cursor,pn));
         }
     }//id content time
 

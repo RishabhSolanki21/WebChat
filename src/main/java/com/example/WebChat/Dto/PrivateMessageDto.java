@@ -24,5 +24,8 @@ public class PrivateMessageDto {
     @JsonProperty("receivername")
     String receivername;
 
+    @JsonProperty("hasNext")
+    Boolean hasNext;
+
     LocalDateTime timestamp;
 }

@@ -19,4 +19,5 @@ public interface ChatRepo extends JpaRepository<PrivateChat,Long> {
 
 
     List<PrivateChat> findChatByUsers1OrUsers2(Users users1, Users users2);
+    PrivateChat findByChatId(Long chatId);
 }

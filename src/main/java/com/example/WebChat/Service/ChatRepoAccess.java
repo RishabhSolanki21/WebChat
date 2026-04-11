@@ -38,6 +38,9 @@ public class ChatRepoAccess {
         }
     }
 
+    public PrivateChat findChatById(Long chatId) {
+        return chatRepo.findByChatId(chatId);
+    }
     public PrivateChat findChatByUsers(Users sender,Users receiver){
         return chatRepo.findChatByUsers(sender,receiver).orElseGet(()->
         chatRepo.save(new PrivateChat(sender,receiver)));
