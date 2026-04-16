@@ -4,13 +4,10 @@ import com.example.WebChat.Configurations.ModelMapperConfig;
 import com.example.WebChat.CustomException.BadCredential;
 import com.example.WebChat.Dto.PrivateChatDto;
 import com.example.WebChat.Entity.PrivateChat;
-import com.example.WebChat.Entity.PrivateMessage;
 import com.example.WebChat.Entity.Users;
-import com.example.WebChat.Repository.PvtMessageRepo;
 import com.example.WebChat.Repository.UserRepo;
 import com.example.WebChat.Security.CreateJwt;
 import com.example.WebChat.Service.ChatRepoAccess;
-import com.example.WebChat.Service.MessageRepoAccess;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.security.Principal;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,7 +29,6 @@ import java.util.List;
 public class RestC {
 
     private final UserRepo userRepo;
-    private final PvtMessageRepo messageRepo;
 
     private final CreateJwt createJwt;
     private final ModelMapperConfig modelMapper;
@@ -43,7 +38,6 @@ public class RestC {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AuthenticationManager authenticationManager;
     private final WebClient client = WebClient.create();
-    private final MessageRepoAccess messageRepoAccess;
 
     @PostMapping("/register")
     public String Register(@RequestBody Users user) {
