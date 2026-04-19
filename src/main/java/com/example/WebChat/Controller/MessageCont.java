@@ -42,13 +42,12 @@ public class MessageCont {
     @MessageMapping("/private/message")
     @Transactional
     public void privateMessage(@Payload PrivateMessageDto messageCont, Principal principal){
-
-            String senderName = principal.getName();
-            Users sender = userRepo.findByUsername(senderName);
-            Users receiver = userRepo.findByUsername(messageCont.getReceivername());
-            PrivateChat chat = chatRepo.findChatByUsers(sender, receiver);
-            PrivateMessage message = new PrivateMessage(sender, chat, messageCont.getMessage());
-            messageRepo.save(message);
+        String senderName = principal.getName();
+        Users sender = userRepo.findByUsername(senderName);
+        Users receiver = userRepo.findByUsername(messageCont.getReceivername());
+        PrivateChat chat = chatRepo.findChatByUsers(sender, receiver);
+        PrivateMessage message = new PrivateMessage(sender, chat, messageCont.getMessage());
+        messageRepo.save(message);
 
         log.info("message is ==>{}",messageCont.getMessage());
         log.info("sendername is ==>{}",senderName);

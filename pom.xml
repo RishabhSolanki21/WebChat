@@ -95,8 +95,9 @@
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+			<version>3.5.11</version>
+			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
