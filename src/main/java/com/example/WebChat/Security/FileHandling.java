@@ -43,6 +43,7 @@ public class FileHandling {
         Path file=upload_dir.resolve(filename).toAbsolutePath().normalize();
         String contentType=Files.probeContentType(file);
         UrlResource resource=new UrlResource(file.toUri());
-        return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType)).body(resource);
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
+                .header("Cache-Control","public,max-age=86400").body(resource);
     }
 }

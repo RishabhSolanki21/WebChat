@@ -28,8 +28,5 @@ public class PrivateMessageDto {
     @JsonProperty("hasNext")
     Boolean hasNext;
 
-    @JsonProperty("file")
-    MultipartFile file;
-
     LocalDateTime timestamp;
 }
