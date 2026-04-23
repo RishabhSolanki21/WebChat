@@ -29,6 +29,10 @@ public class PrivateMessage {
     @Column(name = "Message",nullable = false)
     private String content;
 
+    @JoinColumn(name = "message_type")
+    @Enumerated(EnumType.STRING)
+    private MessageType type;
+
     @CreationTimestamp
     @Column(nullable = false,updatable = false)
     private LocalDateTime time;

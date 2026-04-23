@@ -44,7 +44,7 @@ public class MessageCont {
     public void privateMessage(@Payload PrivateMessageDto messageCont, Principal principal){
         String senderName = principal.getName();
         Users sender = userRepo.findByUsername(senderName);
-        Users receiver = userRepo.findByUsername(messageCont.getReceivername());
+        Users receiver = userRepo.findByUsername(messageCont.getReceiverName());
         PrivateChat chat = chatRepo.findChatByUsers(sender, receiver);
         PrivateMessage message = new PrivateMessage(sender, chat, messageCont.getMessage());
         messageRepo.save(message);
@@ -52,6 +52,6 @@ public class MessageCont {
         log.info("message is ==>{}",messageCont.getMessage());
         log.info("sendername is ==>{}",senderName);
         simpMessagingTemplate.convertAndSendToUser(
-                messageCont.getReceivername(), "/queue/private", messageCont );
+                messageCont.getReceiverName(), "/queue/private", messageCont );
     }
 }

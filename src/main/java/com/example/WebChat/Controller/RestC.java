@@ -7,11 +7,12 @@ import com.example.WebChat.Entity.PrivateChat;
 import com.example.WebChat.Entity.Users;
 import com.example.WebChat.Repository.UserRepo;
 import com.example.WebChat.Security.CreateJwt;
+import com.example.WebChat.Security.FileHandling;
 import com.example.WebChat.Service.ChatRepoAccess;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -19,8 +20,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +42,7 @@ public class RestC {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AuthenticationManager authenticationManager;
     private final WebClient client = WebClient.create();
+    private final FileHandling fileHandling;
 
     @PostMapping("/register")
     public String Register(@RequestBody Users user) {
@@ -102,6 +106,16 @@ public class RestC {
             return ResponseEntity.ok(modelMapper.modelMapper(chatId,ps,cursor,pn));
         }
     }//id content time
+
+    @PostMapping("/upload")
+    public String fileUpload(MultipartFile file) throws IOException {
+        return fileHandling.filesave(file);
+    }
+
+    @GetMapping("/getfile/{filename}")
+    public ResponseEntity<UrlResource> getFile(@PathVariable String filename) throws IOException {
+        return fileHandling.retriveFile(filename);
+    }
 
     @GetMapping("/extApi")
     public String externalApi(){
