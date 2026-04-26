@@ -108,7 +108,7 @@ public class RestC {
     }//id content time
 
     @PostMapping("/upload")
-    public String fileUpload(MultipartFile file) throws IOException {
+    public String fileUpload(@RequestParam("file") MultipartFile file) throws IOException {
         return fileHandling.filesave(file);
     }
 

@@ -37,11 +37,11 @@ public class PrivateMessage {
     @Column(nullable = false,updatable = false)
     private LocalDateTime time;
 
-    public PrivateMessage(Users sender, PrivateChat chat, String message) {
+    public PrivateMessage(Users sender, PrivateChat chat, String message,MessageType messageType) {
         this.sender=sender;
         this.chat=chat;
         this.content=message;
-
+        this.type=messageType;
     }
 
     public PrivateMessage() {

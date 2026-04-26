@@ -46,7 +46,7 @@ public class MessageCont {
         Users sender = userRepo.findByUsername(senderName);
         Users receiver = userRepo.findByUsername(messageCont.getReceiverName());
         PrivateChat chat = chatRepo.findChatByUsers(sender, receiver);
-        PrivateMessage message = new PrivateMessage(sender, chat, messageCont.getMessage());
+        PrivateMessage message = new PrivateMessage(sender, chat, messageCont.getMessage(),messageCont.getMessageType());
         messageRepo.save(message);
 
         log.info("message is ==>{}",messageCont.getMessage());

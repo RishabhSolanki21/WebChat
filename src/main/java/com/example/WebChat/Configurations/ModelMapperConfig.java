@@ -39,7 +39,7 @@ public class ModelMapperConfig {
                         String receiver=m.getSender().getUsername().equals(friend.getUsername())?
                                currentUser.getUsername(): friend.getUsername();
                         return new PrivateMessageDto(
-                                m.getMessageId(),sender, m.getContent(),receiver,true,m.getTime()
+                                m.getMessageId(),sender, m.getContent(),receiver,true,m.getType(),m.getTime()
                         );
                     })
                     .collect(toList());//return mutable list
@@ -58,7 +58,7 @@ public class ModelMapperConfig {
                         String sendername=m.getSender().getUsername();
                         String receivername=privateChat.getUsers1().getUsername().equals(sendername)?
                                 privateChat.getUsers2().getUsername(): privateChat.getUsers1().getUsername();
-                       return new PrivateMessageDto(m.getMessageId(), sendername, m.getContent(), receivername, hasNext, m.getTime());
+                       return new PrivateMessageDto(m.getMessageId(), sendername, m.getContent(), receivername, hasNext,m.getType(),m.getTime());
                     }).toList();// return immutable list
     }
 

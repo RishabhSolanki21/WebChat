@@ -1,5 +1,6 @@
 package com.example.WebChat.Dto;
 
+import com.example.WebChat.Entity.MessageType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +28,9 @@ public class PrivateMessageDto {
 
     @JsonProperty("hasNext")
     Boolean hasNext;
+
+    @JsonProperty("mType")
+    MessageType messageType;
 
     LocalDateTime timestamp;
 }
