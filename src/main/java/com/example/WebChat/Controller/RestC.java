@@ -2,6 +2,7 @@ package com.example.WebChat.Controller;
 
 import com.example.WebChat.Configurations.ModelMapperConfig;
 import com.example.WebChat.CustomException.BadCredential;
+import com.example.WebChat.Dto.FileDto;
 import com.example.WebChat.Dto.PrivateChatDto;
 import com.example.WebChat.Entity.PrivateChat;
 import com.example.WebChat.Entity.Users;
@@ -108,7 +109,7 @@ public class RestC {
     }//id content time
 
     @PostMapping("/upload")
-    public String fileUpload(@RequestParam("file") MultipartFile file) throws IOException {
+    public FileDto fileUpload(@RequestParam("file") MultipartFile file) throws IOException {
         return fileHandling.filesave(file);
     }
 
