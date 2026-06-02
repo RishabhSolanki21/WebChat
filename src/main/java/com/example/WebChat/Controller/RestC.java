@@ -10,6 +10,7 @@ import com.example.WebChat.Repository.UserRepo;
 import com.example.WebChat.Security.CreateJwt;
 import com.example.WebChat.Security.FileHandling;
 import com.example.WebChat.Service.ChatRepoAccess;
+import com.example.WebChat.Service.CycleService;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,6 +45,7 @@ public class RestC {
     private final AuthenticationManager authenticationManager;
     private final WebClient client = WebClient.create();
     private final FileHandling fileHandling;
+    private final CycleService cycleService;
 
     @PostMapping("/register")
     public String Register(@RequestBody Users user) {
@@ -89,18 +91,18 @@ public class RestC {
         if (friendName==null){
             String username = principal.getName();
         logger.info("getting a friends list from db===>{}",username);
-        Users user = userRepo.findByUsername(username);
-        List<PrivateChat> chat1= chat.findChatByUsers1OrUsers2(user, user);
-        if (chat1 == null || chat1.isEmpty()) {
-            logger.info("No chats found for user: {}",username);
-            return ResponseEntity.ok(Collections.emptyList());
-        }
-        List<PrivateChatDto> chatDtoList=modelMapper.modelToDto(chat1,user,ps,pn);
-        logger.info("Loop started");
-        for (PrivateChatDto chatDto : chatDtoList) {
-            logger.info(chatDto.toString());
-        }
-        return ResponseEntity.ok(chatDtoList);
+//        Users user = userRepo.findByUsername(username);
+        List<PrivateChatDto> chatDto=cycleService.findChatByUsers2(username,ps,pn);
+//        if (chat1 == null || chat1.isEmpty()) {
+//            logger.info("No chats found for user: {}",username);
+//            return ResponseEntity.ok(Collections.emptyList());
+//        }        List<PrivateChatDto> chatDtoList=modelMapper.modelToDto(chat1,user,ps,pn);
+//        List<PrivateChatDto> chatDtoList=modelMapper.modelToDto(chatDto,user,ps,pn);
+//        logger.info("Loop started");
+//        for (PrivateChatDto chatDto : chatDtoList) {
+//            logger.info(chatDto.toString());
+//        }
+        return ResponseEntity.ok(chatDto);
         }
         else {
             logger.info("getting a friends list from db===>{} {} {} {}",friendName,cursor,ps,pn);

@@ -2,21 +2,14 @@ package com.example.WebChat.Security;
 
 
 import com.example.WebChat.Dto.FileDto;
-import jakarta.annotation.Resource;
-import jdk.jfr.ContentType;
-import org.apache.catalina.webresources.FileResource;
-import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.support.ReplaceOverride;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,7 +23,7 @@ public class FileHandling {
     private final static Logger log= LoggerFactory.getLogger(FileHandling.class);
 
     public FileDto filesave(MultipartFile file) throws IOException {
-        String filename= UUID.randomUUID().toString()+file.getOriginalFilename();
+        String filename= UUID.randomUUID()+file.getOriginalFilename();
         Path path=upload_dir.resolve(filename).toAbsolutePath().normalize();
         if (!Files.exists(path)) {
             Files.createDirectories(path.getParent());
@@ -47,7 +40,7 @@ public class FileHandling {
         log.info("contentType={}", contentType);
         UrlResource resource=new UrlResource(file.toUri());
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
-                .header("Cache-Control","public,max-age=86400")
+                .header("Cache-Control","private,max-age=86400")
                 .body(resource);
     }
 }

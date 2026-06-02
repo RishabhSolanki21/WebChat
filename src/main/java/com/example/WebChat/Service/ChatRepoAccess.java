@@ -1,11 +1,17 @@
 package com.example.WebChat.Service;
+import com.example.WebChat.Configurations.ModelMapperConfig;
 import com.example.WebChat.CustomException.ChatNotFoundException;
 import com.example.WebChat.CustomException.ChatServiceException;
+import com.example.WebChat.Dto.PrivateChatDto;
 import com.example.WebChat.Entity.PrivateChat;
 import com.example.WebChat.Entity.Users;
 import com.example.WebChat.Repository.ChatRepo;
 
+import com.example.WebChat.Repository.UserRepo;
+import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
@@ -17,6 +23,7 @@ import java.util.List;
 public class ChatRepoAccess {
 
     private final ChatRepo chatRepo;
+
 
     public ChatRepoAccess(ChatRepo chatRepo) {
         this.chatRepo = chatRepo;
