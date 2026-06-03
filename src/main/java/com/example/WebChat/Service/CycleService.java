@@ -25,7 +25,7 @@ public class CycleService {
 
     @Cacheable(
             value = "friends",
-            key = "#username + '-' + #ps +'-'+#pn"
+            key = "#username"
     )
     public List<PrivateChatDto> findChatByUsers2(String username, Integer ps, Integer pn) {
         Users user = userRepo.findByUsername(username);

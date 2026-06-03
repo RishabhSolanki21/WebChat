@@ -3,6 +3,8 @@ package com.example.WebChat.Service;
 import com.example.WebChat.Entity.PrivateMessage;
 import com.example.WebChat.Repository.ChatRepo;
 import com.example.WebChat.Repository.PvtMessageRepo;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
@@ -17,7 +19,11 @@ public class PvtMessageRepoAccess {
         this.repo = repo;
     }
     @Async
-    public void save(PrivateMessage message) {
+    @CacheEvict(
+            value = "friends",
+            key = "#username"
+    )
+    public void save(String username,PrivateMessage message) {
         repo.save(message);
     }
 }
