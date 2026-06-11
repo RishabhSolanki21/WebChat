@@ -91,24 +91,14 @@ public class RestC {
         if (friendName==null){
             String username = principal.getName();
         logger.info("getting a friends list from db===>{}",username);
-//        Users user = userRepo.findByUsername(username);
         List<PrivateChatDto> chatDto=cycleService.findChatByUsers2(username,ps,pn);
-//        if (chat1 == null || chat1.isEmpty()) {
-//            logger.info("No chats found for user: {}",username);
-//            return ResponseEntity.ok(Collections.emptyList());
-//        }        List<PrivateChatDto> chatDtoList=modelMapper.modelToDto(chat1,user,ps,pn);
-//        List<PrivateChatDto> chatDtoList=modelMapper.modelToDto(chatDto,user,ps,pn);
-//        logger.info("Loop started");
-//        for (PrivateChatDto chatDto : chatDtoList) {
-//            logger.info(chatDto.toString());
-//        }
         return ResponseEntity.ok(chatDto);
         }
         else {
             logger.info("getting a friends list from db===>{} {} {} {}",friendName,cursor,ps,pn);
             return ResponseEntity.ok(modelMapper.modelMapper(chatId,ps,cursor,pn));
         }
-    }//id content time
+    }
 
     @PostMapping("/upload")
     public FileDto fileUpload(@RequestParam("file") MultipartFile file) throws IOException {
