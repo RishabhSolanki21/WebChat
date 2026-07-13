@@ -22,7 +22,7 @@ public class CreateJwt {
         credentials.put("username",jwtCredentials);
 
         return Jwts.builder().addClaims(credentials).setSubject(jwtCredentials)
-                .setIssuedAt(new Date(System.currentTimeMillis())).setExpiration(new Date(System.currentTimeMillis()+60*60*1000))
+                .setIssuedAt(new Date(System.currentTimeMillis())).setExpiration(new Date(System.currentTimeMillis()+60*60*10000))
                 .signWith(getJwtSecret()).compact();
     }
     public SecretKey getJwtSecret() {

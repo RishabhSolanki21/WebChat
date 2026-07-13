@@ -24,7 +24,7 @@ public class CycleService {
     private final ModelMapperConfig modelMapper;
 
     @Cacheable(
-            value = "friends",
+                value = "friends",
             key = "#username"
     )
     public List<PrivateChatDto> findChatByUsers2(String username, Integer ps, Integer pn) {

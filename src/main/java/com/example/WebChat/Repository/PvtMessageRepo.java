@@ -17,7 +17,7 @@ public interface PvtMessageRepo extends JpaRepository<PrivateMessage,Long> {
     SELECT m FROM PrivateMessage m
     WHERE m.chat.chatId = :chatId
     AND (:cursor IS NULL OR m.messageId<=:cursor)
-    ORDER BY m.messageId DESC 
+    ORDER BY m.messageId DESC
 """)
     List<PrivateMessage> findPrivateMessage(@Param("chatId" )Long chatId, @Param("cursor") Long cursor, Pageable pagable );
 }

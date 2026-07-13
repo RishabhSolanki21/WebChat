@@ -110,6 +110,8 @@ public class RestC {
         return fileHandling.retriveFile(filename);
     }
 
+//    public void
+
     @GetMapping("/extApi")
     public String externalApi(){
        return client.get()
