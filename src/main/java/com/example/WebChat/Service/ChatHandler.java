@@ -31,10 +31,12 @@ public class ChatHandler implements Handler {
     @Override
     public void save(GroupDto groupDto){
         Users users=userRepo.findByUsername(groupDto.getUsername());
-        Project_data data=projectRepo.findById(groupDto.getProject_id()).orElse(projectRepo.save(Project_data.builder()
-                .Project_id(groupDto.getProject_id()).build()));
+        Project_data data=projectRepo.findById(groupDto.getProject_id()).orElseGet(()->projectRepo.save(
+                Project_data.builder().Project_id(groupDto.getProject_id())
+                        .creator(users).build()));
         GroupChat groupChat = GroupChat.builder()
-                .users(users).projectData(data).message(groupDto.getMessage()).created_at(LocalDateTime.now())
+                .users(users).projectData(data)
+                .message(groupDto.getMessage()).created_at(LocalDateTime.now())
                 .build();
         groupChatRepo.save(groupChat);
     }

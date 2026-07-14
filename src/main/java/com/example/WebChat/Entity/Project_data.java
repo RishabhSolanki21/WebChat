@@ -8,6 +8,9 @@ import java.time.LocalDateTime;
 @Table(name = "Project-Data")
 @Entity
 @Builder
+@Setter
+@Getter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class Project_data {
@@ -22,5 +25,9 @@ public class Project_data {
     @ManyToOne
     @JoinColumn(name = "creator")
     private Users creator;
+
+    @ManyToOne
+    @JoinColumn(name = "last_updater")
+    private Users last_updater;
 
 }

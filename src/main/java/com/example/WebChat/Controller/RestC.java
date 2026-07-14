@@ -3,14 +3,17 @@ package com.example.WebChat.Controller;
 import com.example.WebChat.Configurations.ModelMapperConfig;
 import com.example.WebChat.CustomException.BadCredential;
 import com.example.WebChat.Dto.FileDto;
+import com.example.WebChat.Dto.GroupDto;
 import com.example.WebChat.Dto.PrivateChatDto;
 import com.example.WebChat.Entity.PrivateChat;
+import com.example.WebChat.Entity.Project_data;
 import com.example.WebChat.Entity.Users;
 import com.example.WebChat.Repository.UserRepo;
 import com.example.WebChat.Security.CreateJwt;
 import com.example.WebChat.Security.FileHandling;
 import com.example.WebChat.Service.ChatRepoAccess;
 import com.example.WebChat.Service.CycleService;
+import com.example.WebChat.Service.ProjectHandler;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,6 +49,7 @@ public class RestC {
     private final WebClient client = WebClient.create();
     private final FileHandling fileHandling;
     private final CycleService cycleService;
+    private final ProjectHandler projectHandler;
 
     @PostMapping("/register")
     public String Register(@RequestBody Users user) {
@@ -110,7 +114,10 @@ public class RestC {
         return fileHandling.retriveFile(filename);
     }
 
-//    public void
+    @PutMapping("/updateDocs")
+    public Project_data saveDocs(@RequestBody GroupDto dto){
+        return projectHandler.update(dto);
+    }
 
     @GetMapping("/extApi")
     public String externalApi(){
