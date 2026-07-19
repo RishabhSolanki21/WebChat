@@ -28,11 +28,11 @@ public class ModelMapperConfig {
     private final MessageRepoAccess messageRepoAccess;
     private final ChatRepoAccess chatRepoAccess;
 
-    public List<PrivateChatDto> modelToDto(List<PrivateChat> chat, Users currentUser,Integer ps,Integer pn) {
+    public List<PrivateChatDto> modelToDto(List<PrivateChat> chat, Users currentUser,Integer ps) {
         List<PrivateChatDto> chatDtos = new ArrayList<>();
         for (PrivateChat chat1 : chat) {
             Users friend= chat1.getUsers1().equals(currentUser)?chat1.getUsers2():chat1.getUsers1();
-            List<PrivateMessageDto> messageList=messageRepoAccess.findByChat_ChatId(chat1.getChatId(),ps,null,pn)
+            List<PrivateMessageDto> messageList=messageRepoAccess.findByChat_ChatId(chat1.getChatId(),ps,null)
                     .stream().map(
                     m -> {
                         String sender=m.getSender().getUsername();
@@ -48,8 +48,8 @@ public class ModelMapperConfig {
         return chatDtos;
     }
 
-    public List<PrivateMessageDto> modelMapper(Long chatId, Integer ps, Long cursor, Integer pn) {
-        List<PrivateMessage> message=messageRepoAccess.findByChat_ChatId(chatId,ps,cursor,pn);
+    public List<PrivateMessageDto> modelMapper(Long chatId, Integer ps, Long cursor) {
+        List<PrivateMessage> message=messageRepoAccess.findByChat_ChatId(chatId,ps,cursor);
         boolean hasNext;
         hasNext= message.size() >= ps;
         return message.stream().map(

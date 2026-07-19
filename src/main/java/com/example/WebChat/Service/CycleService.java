@@ -27,12 +27,12 @@ public class CycleService {
                 value = "friends",
             key = "#username"
     )
-    public List<PrivateChatDto> findChatByUsers2(String username, Integer ps, Integer pn) {
+    public List<PrivateChatDto> findChatByUsers2(String username, Integer ps) {
         Users user = userRepo.findByUsername(username);
         log.info("DB hit with findChatByUsers2: {}",user);
         List<PrivateChat> chat1= chatRepo.findChatByUsers1OrUsers2(user, user);
         log.info("DB hit with findChatByUsers2: and completed");
-        List<PrivateChatDto> chatDtoList=modelMapper.modelToDto(chat1,user,ps,pn);
+        List<PrivateChatDto> chatDtoList=modelMapper.modelToDto(chat1,user,ps);
         return chatDtoList;
     }
 }

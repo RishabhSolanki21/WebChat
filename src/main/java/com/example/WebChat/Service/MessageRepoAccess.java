@@ -17,7 +17,7 @@ public class MessageRepoAccess {
 
     private final PvtMessageRepo repo;
 
-    public List<PrivateMessage> findByChat_ChatId(Long chatId, int pageSize, Long cursor, int pageNumber) {
+    public List<PrivateMessage> findByChat_ChatId(Long chatId, int pageSize, Long cursor) {
         Pageable pageable = PageRequest.of(0, pageSize);
         return repo.findPrivateMessage(chatId,cursor,pageable);
 

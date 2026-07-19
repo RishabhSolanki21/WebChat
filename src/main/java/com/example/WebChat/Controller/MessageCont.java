@@ -2,10 +2,12 @@ package com.example.WebChat.Controller;
 
 import com.example.WebChat.Configurations.Dispatcher;
 import com.example.WebChat.Dto.GroupDto;
+import com.example.WebChat.Entity.MessageType;
 import com.example.WebChat.Entity.PrivateChat;
 import com.example.WebChat.Dto.PrivateMessageDto;
 import com.example.WebChat.Entity.PrivateMessage;
 import com.example.WebChat.Entity.Users;
+import com.example.WebChat.Service.ChatHandler;
 import com.example.WebChat.Service.ChatRepoAccess;
 import com.example.WebChat.Service.PvtMessageRepoAccess;
 import com.example.WebChat.Service.UserRepoAccess;
@@ -28,13 +30,15 @@ public class MessageCont {
     private final UserRepoAccess userRepo;
     private final ChatRepoAccess chatRepo;
     private final PvtMessageRepoAccess messageRepo;
-    private final Dispatcher dispatcher;
+    private final ChatHandler chatHandler;
 
     @MessageMapping("/message/{roomid}")
     public void groupMessage(@Payload GroupDto dto, @DestinationVariable String roomid){
         log.info("room_id: {} with message {}", roomid, dto.toString());
         simpMessagingTemplate.convertAndSend("/topic/group/" + roomid, dto);
-        dispatcher.dispatch(dto);
+        if (dto.getType()== MessageType.CHAT){
+            chatHandler.save(dto);
+        }
     }
 
     @MessageMapping("/private/message")

@@ -3,6 +3,7 @@ package com.example.WebChat.Security;
 import com.example.WebChat.Repository.UserRepo;
 import com.example.WebChat.Service.JwtClaims;
 import com.example.WebChat.Service.MyUserDtails;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 import java.util.Objects;
 
 
+@Slf4j
 @Component
 public class MyChannel_Interceptor implements ChannelInterceptor {
 
@@ -31,10 +33,12 @@ public class MyChannel_Interceptor implements ChannelInterceptor {
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message,StompHeaderAccessor.class);
-
-        if (StompCommand.CONNECT.equals(accessor.getCommand())) {
+        assert accessor != null;
+        log.info("message= {}",accessor.getMessage());
+        log.info("accessor= {}",accessor.getDestination());
+        if(StompCommand.CONNECT.equals(accessor.getCommand())){
             String token=accessor.getFirstNativeHeader("Authorization");
-            if (token!=null&&token.startsWith("Bearer ")) {
+            if(token!=null&&token.startsWith("Bearer ")) {
                 token=token.substring(7);
                 if(jwtClaims.isValid(token)) {
                     String username=jwtClaims.getUsername(token);

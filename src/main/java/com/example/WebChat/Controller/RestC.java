@@ -89,18 +89,16 @@ public class RestC {
                                          @RequestParam(name="chatId",required = false) Long chatId,
                                          @RequestParam(name = "selectedF",required = false)String friendName,
                                          @RequestParam(required = false) Long cursor,
-                                         @RequestParam(required = false, defaultValue = "10") Integer ps,
-                                         @RequestParam(required = false,defaultValue = "0")Integer pn
-    ) {
+                                         @RequestParam(required = false, defaultValue = "10") Integer ps) {
         if (friendName==null){
             String username = principal.getName();
         logger.info("getting a friends list from db===>{}",username);
-        List<PrivateChatDto> chatDto=cycleService.findChatByUsers2(username,ps,pn);
+        List<PrivateChatDto> chatDto=cycleService.findChatByUsers2(username,ps);
         return ResponseEntity.ok(chatDto);
         }
         else {
-            logger.info("getting a friends list from db===>{} {} {} {}",friendName,cursor,ps,pn);
-            return ResponseEntity.ok(modelMapper.modelMapper(chatId,ps,cursor,pn));
+            logger.info("getting a friends list from db===>{} {} {}",friendName,cursor,ps);
+            return ResponseEntity.ok(modelMapper.modelMapper(chatId,ps,cursor));
         }
     }
 

@@ -10,25 +10,19 @@ import com.example.WebChat.Repository.GroupChatRepo;
 import com.example.WebChat.Repository.ProjectRepo;
 import com.example.WebChat.Repository.UserRepo;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
 @Service
 @AllArgsConstructor
-public class ChatHandler implements Handler {
+public class ChatHandler {
 
     private final GroupChatRepo groupChatRepo;
     private final UserRepo userRepo;
     private final ProjectRepo projectRepo;
 
-    @Override
-    public MessageType messageType() {
-        return MessageType.CHAT;
-    }
 
-    @Override
     public void save(GroupDto groupDto){
         Users users=userRepo.findByUsername(groupDto.getUsername());
         Project_data data=projectRepo.findById(groupDto.getProject_id()).orElseGet(()->projectRepo.save(
