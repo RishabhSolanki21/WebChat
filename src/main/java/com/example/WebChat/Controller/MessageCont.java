@@ -2,6 +2,7 @@ package com.example.WebChat.Controller;
 
 import com.example.WebChat.Configurations.Dispatcher;
 import com.example.WebChat.Dto.GroupDto;
+import com.example.WebChat.Dto.OnlineUsers;
 import com.example.WebChat.Entity.MessageType;
 import com.example.WebChat.Entity.PrivateChat;
 import com.example.WebChat.Dto.PrivateMessageDto;
@@ -17,11 +18,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 
-@RestController
+@Controller
 @AllArgsConstructor
 public class MessageCont {
 

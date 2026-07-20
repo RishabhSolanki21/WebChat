@@ -1,32 +1,33 @@
-package com.example.WebChat.Configurations;
+package com.example.WebChat.Controller;
 
 
-import com.example.WebChat.Dto.GroupDto;
 import com.example.WebChat.Dto.OnlineUsers;
 import com.example.WebChat.Dto.States;
-import com.example.WebChat.Entity.Users;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
-import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
-import java.util.Collection;
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
-@Configuration
+@Controller
 public class EventListner {
 
     private ConcurrentHashMap<String, Set<OnlineUsers>>map=new ConcurrentHashMap<>();
-    Set<OnlineUsers> onlineUsersSet=new HashSet<>();
+    Set<OnlineUsers> onlineUsersSet;
     private final SimpMessagingTemplate template;
 
     public EventListner(SimpMessagingTemplate template) {
@@ -44,9 +45,9 @@ public class EventListner {
         log.info("Session accessor event {}",accessor.getDestination());
         if (Objects.requireNonNull(accessor.getDestination()).startsWith("/topic/group/")) {
             String username=Objects.requireNonNull(accessor.getUser().getName());
-            OnlineUsers onlineUsers=new OnlineUsers(username, States.SUBSCRIBE,room);
-            onlineUsersSet.add(onlineUsers);
-            map.put(room,onlineUsersSet);
+            OnlineUsers onlineUsers=new OnlineUsers(username, States.SUBSCRIBE,room,accessor.getSessionId());
+            map.computeIfAbsent(room,set->
+                onlineUsersSet = new HashSet<>()).add(onlineUsers);
             log.info("Session accessor event2 {}",username);
             log.info("Online Users {}",map);
             template.convertAndSend("/topic/group/"+room, map.get(room));
@@ -54,8 +55,16 @@ public class EventListner {
     }
 
     @MessageMapping("/unsubscribe")
-    public void UnsubscribeEvent(SessionUnsubscribeEvent event) {
-
-        template.convertAndSend("/topic/group/"+1, map.get(1));
+    public void UnsubscribeEvent(@Payload OnlineUsers onlineUsers, Message<?>message) {
+        log.info("Online Users leaving {}",onlineUsers);
+        StompHeaderAccessor accessor=StompHeaderAccessor.wrap(message);
+        String session=accessor.getSessionId();
+        log.info("User leaving session {}",session);
+        log.info("Session leaving {}",session);
+        template.convertAndSend("/topic/group/"+onlineUsers.getRoomId(),
+                Objects.requireNonNull(map.computeIfPresent(onlineUsers.getRoomId(), (roomId, set) -> {
+            set.removeIf(onlineUsers1 -> onlineUsers1.getSessionId().equals(session));
+            return map.isEmpty()?null:map.get(roomId);
+        })));
     }
 }
