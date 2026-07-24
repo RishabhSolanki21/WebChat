@@ -1,6 +1,5 @@
 package com.example.WebChat.Dto;
 
-import com.example.WebChat.Entity.MessageType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -20,11 +19,8 @@ public class GroupDto {
     @JsonProperty("type")
     private MessageType type;
 
-    @JsonProperty("PosStart")
-    private int pos;
-
-    @JsonProperty("PosEnd")
-    private int pos2;
+    @JsonProperty("caret")
+    private CaretPosition caretPosition;
 
     @JsonProperty("roomId")
     private Long Project_id;

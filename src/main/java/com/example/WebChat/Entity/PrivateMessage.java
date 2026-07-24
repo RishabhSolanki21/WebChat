@@ -1,6 +1,7 @@
 package com.example.WebChat.Entity;
 
 
+import com.example.WebChat.Dto.MessageType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

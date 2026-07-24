@@ -1,7 +1,7 @@
 package com.example.WebChat.Configurations;
 
 import com.example.WebChat.Dto.GroupDto;
-import com.example.WebChat.Entity.MessageType;
+import com.example.WebChat.Dto.MessageType;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;

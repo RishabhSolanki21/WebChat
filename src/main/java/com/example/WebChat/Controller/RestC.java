@@ -113,7 +113,7 @@ public class RestC {
     }
 
     @PutMapping("/updateDocs")
-    public Project_data saveDocs(@RequestBody GroupDto dto){
+    public Project_data saveDocs(@RequestBody GroupDto dto) throws InterruptedException {
         return projectHandler.update(dto);
     }
 

@@ -20,5 +20,12 @@ public class OnlineUsers {
 
     private String SessionId;
 
+    @JsonProperty("type")
+    private MessageType MessageType;
 
+    @JsonProperty("caret")
+    private CaretPosition caretPosition;
+
+//    @JsonProperty("colour")
+//    private int user_colour;
 }
