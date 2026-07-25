@@ -48,6 +48,16 @@ public class MessageCont {
         }
     }
 
+    @MessageMapping("/caret/{roomId}")
+    public void CaretUpdate(@Payload CaretPosition caretPosition,@DestinationVariable String roomId,Principal principal){
+        String username = principal.getName();
+        log.info("not updated map value {}",map.get(roomId));
+        map.get(roomId).get(username).setCaretPosition(caretPosition);
+        log.info("Caret Position {}",caretPosition);
+        log.info("updated map value {}",map.get(roomId));
+        simpMessagingTemplate.convertAndSend("/topic/group/" + roomId,map.get(roomId));
+    }
+
     @EventListener
     public void SubscribeEvent(SessionSubscribeEvent event) {
         StompHeaderAccessor accessor=StompHeaderAccessor.wrap(event.getMessage());
@@ -67,14 +77,6 @@ public class MessageCont {
             log.info("Online Users {}",map);
             template.convertAndSend("/topic/group/"+room, map.get(room));
         }
-    }
-
-    @MessageMapping("/caret/{roomId}")
-    public void CaretUpdate(@Payload CaretPosition caretPosition,@DestinationVariable String roomId,Principal principal){
-        String username = principal.getName();
-        map.get(roomId).get(username).setCaretPosition(caretPosition);
-        log.info("Caret Position {}",caretPosition);
-        simpMessagingTemplate.convertAndSend("/topic/group/" + roomId,map.get(roomId));
     }
 
     @MessageMapping("/unsubscribe")
