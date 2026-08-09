@@ -20,6 +20,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
+import java.awt.*;
 import java.security.Principal;
 import java.util.HashSet;
 import java.util.Objects;
@@ -38,10 +39,25 @@ public class MessageCont {
     private final ChatHandler chatHandler;
     private final ConcurrentHashMap<String, ConcurrentHashMap<String,OnlineUsers>> map=new ConcurrentHashMap<>();
     private final SimpMessagingTemplate template;
+    private final ConcurrentHashMap<String,DocsVersion>version=new ConcurrentHashMap<>();
 
     @MessageMapping("/message/{roomid}")
-    public void groupMessage(@Payload GroupDto dto, @DestinationVariable String roomid){
+    public void groupMessage(@Payload GroupDto dto, @DestinationVariable String roomid) throws InterruptedException {
         log.info("room_id: {} with message {}", roomid, dto.toString());
+//        if(dto.getUsername().equals("rishabh")){
+//            Thread.sleep(10000);
+//        }
+        log.info("docs version {} {}",dto.getVersion(),dto.getOldPosition());
+        dto.setVersion(dto.getVersion()+1);
+//        if (dto.getType()== MessageType.PASS){
+//            version.computeIfAbsent(roomid,room->
+//                    new DocsVersion(1,dto.getMessage())
+//                    );
+//            version.computeIfPresent(String.valueOf(version.get(roomid)),(room, docsVersion)->{
+//                        docsVersion.setDocs("j");
+//                return docsVersion;
+//            });
+//        }
         simpMessagingTemplate.convertAndSend("/topic/group/" + roomid, dto);
         if (dto.getType()== MessageType.CHAT){
             chatHandler.save(dto);

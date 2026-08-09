@@ -25,4 +25,13 @@ public class GroupDto {
     @JsonProperty("roomId")
     private Long Project_id;
 
+    @JsonProperty("version")
+    private int version;
+
+    @JsonProperty("oldPos")
+    private int oldPosition;
+
+    @JsonProperty("changed_text")
+    private ChangedText changedText;
+
 }
