@@ -18,7 +18,7 @@ public class Dispatcher {
             dispatcher.put(handler.messageType(),handler);
         }
     }
-    public void dispatch(GroupDto groupDto) {
-        dispatcher.get(groupDto.getType()).save(groupDto);
-    }
+//    public void dispatch(GroupDto groupDto) {
+//        dispatcher.get(groupDto.getType()).save(groupDto);
+//    }
 }

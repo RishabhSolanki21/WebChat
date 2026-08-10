@@ -23,17 +23,14 @@ public class ProjectHandler {
     private final ProjectRepo projectRepo;
     private final UserRepo userRepo;
 
-    public Project_data update(GroupDto groupDto) {
-        Project_data data=projectRepo.findById(groupDto.getProject_id()).orElseGet(()->projectRepo.save(
-                Project_data.builder().Project_id(groupDto.getProject_id()).creator(
-                        userRepo.findByUsername(groupDto.getUsername())).build()));
-        log.info("current project data {}", data);
-        data.setDocument(groupDto.getMessage());
-        data.setLast_updater(userRepo.findByUsername(groupDto.getUsername()));
-        data.setDate(LocalDateTime.now());
-        return projectRepo.save(data);
-    }
-    public void cr(){
-
-    }
+//    public Project_data update(GroupDto groupDto) {
+//        Project_data data=projectRepo.findById(groupDto.getProject_id()).orElseGet(()->projectRepo.save(
+//                Project_data.builder().Project_id(groupDto.getProject_id()).creator(
+//                        userRepo.findByUsername(groupDto.getUsername())).build()));
+//        log.info("current project data {}", data);
+//        data.setDocument(groupDto.getMessage());
+//        data.setLast_updater(userRepo.findByUsername(groupDto.getUsername()));
+//        data.setDate(LocalDateTime.now());
+//        return projectRepo.save(data);
+//    }
 }

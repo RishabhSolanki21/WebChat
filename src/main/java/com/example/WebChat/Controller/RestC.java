@@ -112,10 +112,10 @@ public class RestC {
         return fileHandling.retriveFile(filename);
     }
 
-    @PutMapping("/updateDocs")
-    public Project_data saveDocs(@RequestBody GroupDto dto) throws InterruptedException {
-        return projectHandler.update(dto);
-    }
+//    @PutMapping("/updateDocs")
+//    public Project_data saveDocs(@RequestBody GroupDto dto) throws InterruptedException {
+//        return projectHandler.update(dto);
+//    }
 
     @GetMapping("/extApi")
     public String externalApi(){

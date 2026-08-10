@@ -8,6 +8,8 @@ import com.example.WebChat.Service.ChatHandler;
 import com.example.WebChat.Service.ChatRepoAccess;
 import com.example.WebChat.Service.PvtMessageRepoAccess;
 import com.example.WebChat.Service.UserRepoAccess;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -40,28 +42,37 @@ public class MessageCont {
     private final ConcurrentHashMap<String, ConcurrentHashMap<String,OnlineUsers>> map=new ConcurrentHashMap<>();
     private final SimpMessagingTemplate template;
     private final ConcurrentHashMap<String,DocsVersion>version=new ConcurrentHashMap<>();
+    private final ObjectMapper objectMapper;
 
     @MessageMapping("/message/{roomid}")
-    public void groupMessage(@Payload GroupDto dto, @DestinationVariable String roomid) throws InterruptedException {
-        log.info("room_id: {} with message {}", roomid, dto.toString());
+    public void groupMessage(@Payload RoomEvent roomEvent , @DestinationVariable String roomid) throws InterruptedException, JsonProcessingException {
+        log.info("room_id: {} with message {}", roomid, roomEvent.toString());
 //        if(dto.getUsername().equals("rishabh")){
 //            Thread.sleep(10000);
 //        }
-        log.info("docs version {} {}",dto.getVersion(),dto.getOldPosition());
-        dto.setVersion(dto.getVersion()+1);
-//        if (dto.getType()== MessageType.PASS){
-//            version.computeIfAbsent(roomid,room->
-//                    new DocsVersion(1,dto.getMessage())
-//                    );
-//            version.computeIfPresent(String.valueOf(version.get(roomid)),(room, docsVersion)->{
-//                        docsVersion.setDocs("j");
-//                return docsVersion;
-//            });
-//        }
-        simpMessagingTemplate.convertAndSend("/topic/group/" + roomid, dto);
-        if (dto.getType()== MessageType.CHAT){
-            chatHandler.save(dto);
+        ChangedText text = objectMapper.treeToValue(roomEvent.getPayload(), ChangedText.class);
+        if (roomEvent.getType() == MessageType.PASS) {
+            int v = text.getVersion();
+            version.computeIfPresent(roomid, (room, docsVersion) -> {
+                log.info("received text {}",text);
+                StringBuilder updatedText = new StringBuilder(docsVersion.getDocs());
+                log.info("updated text0 {}",updatedText);
+                updatedText.delete(text.getStart(),text.getStart()+text.getDelete_count());
+                log.info("updated text {}",updatedText);
+                updatedText.insert(text.getStart(), text.getNewText());
+                log.info("updated text2 {}",updatedText);
+                docsVersion.setDocs(String.valueOf(updatedText));
+                docsVersion.setVersion(docsVersion.getVersion() + 1);
+                return docsVersion;
+            });
+            version.computeIfAbsent(roomid, room ->
+                    new DocsVersion(v, text.getNewText())
+            );
         }
+        simpMessagingTemplate.convertAndSend("/topic/group/" + roomid, roomEvent);
+//        if (dto.getType()== MessageType.CHAT){
+//            chatHandler.save(dto);
+//        }
     }
 
     @MessageMapping("/caret/{roomId}")

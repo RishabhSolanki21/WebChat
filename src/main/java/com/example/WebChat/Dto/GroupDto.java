@@ -10,28 +10,28 @@ import lombok.*;
 @ToString
 public class GroupDto {
 
-    @JsonProperty("username")
-    private String username;
-
+//    @JsonProperty("username")
+//    private String username;
+//
     @JsonProperty("content")
-    private String message;
+    private String content;
+//
+//    @JsonProperty("type")
+//    private MessageType type;
 
-    @JsonProperty("type")
-    private MessageType type;
+//    @JsonProperty("caret")
+//    private CaretPosition caretPosition;
 
-    @JsonProperty("caret")
-    private CaretPosition caretPosition;
+//    @JsonProperty("roomId")
+//    private Long Project_id;
 
-    @JsonProperty("roomId")
-    private Long Project_id;
+//    @JsonProperty("version")
+//    private int version;
 
-    @JsonProperty("version")
-    private int version;
-
-    @JsonProperty("oldPos")
-    private int oldPosition;
-
-    @JsonProperty("changed_text")
-    private ChangedText changedText;
+//    @JsonProperty("oldPos")
+//    private int oldPosition;
+//
+//    @JsonProperty("changed_text")
+//    private ChangedText changedText;
 
 }
