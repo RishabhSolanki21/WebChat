@@ -37,7 +37,7 @@ public class MySecurity {
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                         authorizationManagerRequestMatcherRegistry
                                 .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-                                .requestMatchers("/login","/register").permitAll()
+                                .requestMatchers("/login","/register","/actuator/health").permitAll()
                                 .requestMatchers("/ws/**").permitAll()
                                 .anyRequest().authenticated())
                .exceptionHandling(ex->ex.authenticationEntryPoint(customLoginException))

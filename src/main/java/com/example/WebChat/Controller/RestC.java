@@ -26,7 +26,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -46,7 +45,6 @@ public class RestC {
     private static final Logger logger= LogManager.getLogger(RestC.class);
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final AuthenticationManager authenticationManager;
-    private final WebClient client = WebClient.create();
     private final FileHandling fileHandling;
     private final CycleService cycleService;
     private final ProjectHandler projectHandler;
@@ -117,12 +115,4 @@ public class RestC {
 //        return projectHandler.update(dto);
 //    }
 
-    @GetMapping("/extApi")
-    public String externalApi(){
-       return client.get()
-                .uri("www.fuck_off.com")
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-    }
 }

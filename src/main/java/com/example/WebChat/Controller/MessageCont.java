@@ -4,14 +4,13 @@ import com.example.WebChat.Dto.*;
 import com.example.WebChat.Entity.PrivateChat;
 import com.example.WebChat.Entity.PrivateMessage;
 import com.example.WebChat.Entity.Users;
-import com.example.WebChat.Service.ChatHandler;
-import com.example.WebChat.Service.ChatRepoAccess;
-import com.example.WebChat.Service.PvtMessageRepoAccess;
-import com.example.WebChat.Service.UserRepoAccess;
+import com.example.WebChat.Service.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Synchronization;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.Synchronized;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
@@ -41,39 +40,59 @@ public class MessageCont {
     private final ChatHandler chatHandler;
     private final ConcurrentHashMap<String, ConcurrentHashMap<String,OnlineUsers>> map=new ConcurrentHashMap<>();
     private final SimpMessagingTemplate template;
-    private final ConcurrentHashMap<String,DocsVersion>version=new ConcurrentHashMap<>();
-    private final ObjectMapper objectMapper;
+    private final Perform_OT ot;
 
-    @MessageMapping("/message/{roomid}")
-    public void groupMessage(@Payload RoomEvent roomEvent , @DestinationVariable String roomid) throws InterruptedException, JsonProcessingException {
-        log.info("room_id: {} with message {}", roomid, roomEvent.toString());
-//        if(dto.getUsername().equals("rishabh")){
-//            Thread.sleep(10000);
+//    @MessageMapping("/message/{roomid}")
+//    public void groupMessage(@Payload RoomEvent roomEvent , @DestinationVariable String roomid) throws InterruptedException, JsonProcessingException {
+//        log.info("room_id: {} with message {}", roomid, roomEvent.toString());
+////        if(dto.getUsername().equals("rishabh")){
+////            Thread.sleep(500);
+////        }
+//        if (roomEvent.getType() == MessageType.PASS) {
+//            ChangedText text = objectMapper.treeToValue(roomEvent.getPayload(), ChangedText.class);
+//            int v = text.getVersion();
+//            version.computeIfPresent(roomid, (room, docsVersion) -> {
+//
+////                if (text.getVersion()==version.get(roomid).getVersion()){
+//
+////                }
+//                log.info("received text {}",text);
+//                StringBuilder updatedText = new StringBuilder(docsVersion.getDocs());
+//                log.info("updated text0 {}",updatedText);
+//                updatedText.delete(text.getStart(),text.getStart()+text.getDelete_count());
+//                log.info("updated text {}",updatedText);
+//                updatedText.insert(text.getStart(), text.getNewText());
+//                log.info("updated text2 {}",updatedText);
+//                docsVersion.setDocs(String.valueOf(updatedText));
+//                docsVersion.setVersion(docsVersion.getVersion() + 1);
+//                text.setVersion(text.getVersion()+1);
+//                roomEvent.setPayload(objectMapper.valueToTree(text));
+//                log.info("updated roomEvent {}",roomEvent);
+//                return docsVersion;
+//            });
+//
+//            version.computeIfAbsent(roomid, room ->
+////                    prevUserstart=text.getStart();
+//                    new DocsVersion(v, text.getNewText())
+//            );
 //        }
-        ChangedText text = objectMapper.treeToValue(roomEvent.getPayload(), ChangedText.class);
-        if (roomEvent.getType() == MessageType.PASS) {
-            int v = text.getVersion();
-            version.computeIfPresent(roomid, (room, docsVersion) -> {
-                log.info("received text {}",text);
-                StringBuilder updatedText = new StringBuilder(docsVersion.getDocs());
-                log.info("updated text0 {}",updatedText);
-                updatedText.delete(text.getStart(),text.getStart()+text.getDelete_count());
-                log.info("updated text {}",updatedText);
-                updatedText.insert(text.getStart(), text.getNewText());
-                log.info("updated text2 {}",updatedText);
-                docsVersion.setDocs(String.valueOf(updatedText));
-                docsVersion.setVersion(docsVersion.getVersion() + 1);
-                return docsVersion;
-            });
-            version.computeIfAbsent(roomid, room ->
-                    new DocsVersion(v, text.getNewText())
-            );
-        }
-        simpMessagingTemplate.convertAndSend("/topic/group/" + roomid, roomEvent);
-//        if (dto.getType()== MessageType.CHAT){
-//            chatHandler.save(dto);
-//        }
+//        simpMessagingTemplate.convertAndSend("/topic/group/" + roomid, roomEvent);
+////        if (dto.getType()== MessageType.CHAT){
+////            chatHandler.save(dto);
+////        }
+//    }
+
+
+@MessageMapping("/message/{roomid}")
+@Synchronized
+public void groupMessage(@Payload RoomEvent roomEvent , @DestinationVariable String roomid) throws JsonProcessingException {
+    log.info("room_id: {} with message {}", roomid, roomEvent.toString());
+
+    if (roomEvent.getType() == MessageType.PASS) {
+        ot.OT(roomEvent,roomid);
     }
+    simpMessagingTemplate.convertAndSend("/topic/group/" + roomid, roomEvent);
+}
 
     @MessageMapping("/caret/{roomId}")
     public void CaretUpdate(@Payload CaretPosition caretPosition,@DestinationVariable String roomId,Principal principal){
