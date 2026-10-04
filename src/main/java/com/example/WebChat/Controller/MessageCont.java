@@ -1,5 +1,6 @@
 package com.example.WebChat.Controller;
 
+import com.example.WebChat.Configurations.RoomLock;
 import com.example.WebChat.Dto.*;
 import com.example.WebChat.Entity.PrivateChat;
 import com.example.WebChat.Entity.PrivateMessage;
@@ -24,6 +25,7 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import java.awt.*;
 import java.security.Principal;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,6 +43,11 @@ public class MessageCont {
     private final ConcurrentHashMap<String, ConcurrentHashMap<String,OnlineUsers>> map=new ConcurrentHashMap<>();
     private final SimpMessagingTemplate template;
     private final Perform_OT ot;
+
+    private final ConcurrentHashMap<String,DocsVersion> version=new ConcurrentHashMap<>();
+    private final ObjectMapper objectMapper;
+    private final ConcurrentHashMap<String, List<ChangedText>> history=new ConcurrentHashMap<>();
+    private final RoomLock roomLock;
 
 //    @MessageMapping("/message/{roomid}")
 //    public void groupMessage(@Payload RoomEvent roomEvent , @DestinationVariable String roomid) throws InterruptedException, JsonProcessingException {
@@ -84,14 +91,15 @@ public class MessageCont {
 
 
 @MessageMapping("/message/{roomid}")
-@Synchronized
 public void groupMessage(@Payload RoomEvent roomEvent , @DestinationVariable String roomid) throws JsonProcessingException {
     log.info("room_id: {} with message {}", roomid, roomEvent.toString());
 
-    if (roomEvent.getType() == MessageType.PASS) {
-        ot.OT(roomEvent,roomid);
+    synchronized (roomLock.roomlock(roomid)){
+        if (roomEvent.getType() == MessageType.PASS) {
+            ot.OT(roomEvent,roomid);
+        }
+        simpMessagingTemplate.convertAndSend("/topic/group/" + roomid, roomEvent);
     }
-    simpMessagingTemplate.convertAndSend("/topic/group/" + roomid, roomEvent);
 }
 
     @MessageMapping("/caret/{roomId}")

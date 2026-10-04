@@ -26,7 +26,6 @@ public class Perform_OT {
     private final ObjectMapper objectMapper;
     private final ConcurrentHashMap<String,List<ChangedText>> history=new ConcurrentHashMap<>();
 
-    @Synchronized
     public void OT(RoomEvent roomEvent, String roomid) throws JsonProcessingException {
         ChangedText text = objectMapper.treeToValue(roomEvent.getPayload(), ChangedText.class);
         int v = text.getVersion();
