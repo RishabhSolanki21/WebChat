@@ -93,11 +93,13 @@ public class MessageCont {
 @MessageMapping("/message/{roomid}")
 public void groupMessage(@Payload RoomEvent roomEvent , @DestinationVariable String roomid) throws JsonProcessingException {
     log.info("room_id: {} with message {}", roomid, roomEvent.toString());
-
-    synchronized (roomLock.roomlock(roomid)){
-        if (roomEvent.getType() == MessageType.PASS) {
+    if (roomEvent.getType() == MessageType.PASS) {
+        synchronized (roomLock.roomlock(roomid)){
             ot.OT(roomEvent,roomid);
+            simpMessagingTemplate.convertAndSend("/topic/group/" + roomid, roomEvent);
         }
+    }
+    else {
         simpMessagingTemplate.convertAndSend("/topic/group/" + roomid, roomEvent);
     }
 }

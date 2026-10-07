@@ -6,13 +6,10 @@ import com.example.WebChat.Dto.RoomEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -24,34 +21,37 @@ public class Perform_OT {
 
     private final ConcurrentHashMap<String,DocsVersion> version=new ConcurrentHashMap<>();
     private final ObjectMapper objectMapper;
-    private final ConcurrentHashMap<String,List<ChangedText>> history=new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String,List<ChangedText>> opHistory=new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String,List<Integer>> baseVersion=new ConcurrentHashMap<>();
 
     public void OT(RoomEvent roomEvent, String roomid) throws JsonProcessingException {
-        ChangedText text = objectMapper.treeToValue(roomEvent.getPayload(), ChangedText.class);
-        int v = text.getVersion();
-        DocsVersion version1 = version.get(roomid);
-        if (text.getVersion() ==version1.getVersion()) {
+        ChangedText clinttext = objectMapper.treeToValue(roomEvent.getPayload(), ChangedText.class);
+        int v = clinttext.getVersion();
+        version.computeIfAbsent(roomid, room ->
+                new DocsVersion(v, clinttext.getNewText())
+        );
+        DocsVersion currentVersion = version.get(roomid);
+        if (clinttext.getVersion() ==currentVersion.getVersion()) {
             version.computeIfPresent(roomid, (room, docsVersion) -> {
-                log.info("received text {}",text);
                 StringBuilder updatedText = new StringBuilder(docsVersion.getDocs());
-                log.info("updated text0 {}",updatedText);
-                updatedText.delete(text.getStart(),text.getStart()+text.getDelete_count());
-                log.info("updated text {}",updatedText);
-                updatedText.insert(text.getStart(), text.getNewText());
-                log.info("updated text2 {}",updatedText);
+                updatedText.delete(clinttext.getStart(),clinttext.getStart()+clinttext.getDelete_count());
+                updatedText.insert(clinttext.getStart(), clinttext.getNewText());
                 docsVersion.setDocs(String.valueOf(updatedText));
                 docsVersion.setVersion(docsVersion.getVersion() + 1);
-                text.setVersion(text.getVersion()+1);
-                roomEvent.setPayload(objectMapper.valueToTree(text));
-                log.info("updated roomEvent {}",roomEvent);
+                clinttext.setVersion(clinttext.getVersion()+1);
+                roomEvent.setPayload(objectMapper.valueToTree(clinttext));
                 return docsVersion;
             });
-            version.computeIfAbsent(roomid, room ->
-                    new DocsVersion(v, text.getNewText())
-            );
+            opHistory.computeIfAbsent(roomid, l->new ArrayList<>()).add(clinttext);
         }
         else{
-            // perform ot
+            List<ChangedText>history=opHistory.get(roomid);
+            int versionGap=currentVersion.getVersion()-clinttext.getVersion();
+            int index= history.size()-versionGap;
+            for (int i = index; i < history.size() ; i++) {
+               ChangedText historytext= history.get(i);
+               clinttext.setVersion(clinttext.getVersion()+1);
+            }
         }
     }
 }
