@@ -22,7 +22,6 @@ public class Perform_OT {
     private final ConcurrentHashMap<String,DocsVersion> version=new ConcurrentHashMap<>();
     private final ObjectMapper objectMapper;
     private final ConcurrentHashMap<String,List<ChangedText>> opHistory=new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String,List<Integer>> baseVersion=new ConcurrentHashMap<>();
 
     public void OT(RoomEvent roomEvent, String roomid) throws JsonProcessingException {
         ChangedText clinttext = objectMapper.treeToValue(roomEvent.getPayload(), ChangedText.class);
@@ -32,26 +31,39 @@ public class Perform_OT {
         );
         DocsVersion currentVersion = version.get(roomid);
         if (clinttext.getVersion() ==currentVersion.getVersion()) {
-            version.computeIfPresent(roomid, (room, docsVersion) -> {
-                StringBuilder updatedText = new StringBuilder(docsVersion.getDocs());
-                updatedText.delete(clinttext.getStart(),clinttext.getStart()+clinttext.getDelete_count());
-                updatedText.insert(clinttext.getStart(), clinttext.getNewText());
-                docsVersion.setDocs(String.valueOf(updatedText));
-                docsVersion.setVersion(docsVersion.getVersion() + 1);
-                clinttext.setVersion(clinttext.getVersion()+1);
-                roomEvent.setPayload(objectMapper.valueToTree(clinttext));
-                return docsVersion;
-            });
+            transform(roomid, clinttext, roomEvent);
             opHistory.computeIfAbsent(roomid, l->new ArrayList<>()).add(clinttext);
-        }
-        else{
+        } else if (clinttext.getVersion() < currentVersion.getVersion()){
             List<ChangedText>history=opHistory.get(roomid);
             int versionGap=currentVersion.getVersion()-clinttext.getVersion();
             int index= history.size()-versionGap;
             for (int i = index; i < history.size() ; i++) {
-               ChangedText historytext= history.get(i);
-               clinttext.setVersion(clinttext.getVersion()+1);
+               adjustPosition(history.get(i),clinttext);
             }
+            transform(roomid, clinttext, roomEvent);
+            opHistory.get(roomid).add(clinttext);        }
+    }
+    public void adjustPosition(ChangedText historyOperation, ChangedText incomingOperation) {
+        // normal delete and write operatiions
+        int hstart=historyOperation.getStart();
+        int hdeletecount=historyOperation.getDelete_count();
+        int vstart=incomingOperation.getStart();
+        if (vstart>=hstart+hdeletecount){// this will work for if two users type at same index or above
+            incomingOperation.setStart(vstart+historyOperation.getNewText().length()-hdeletecount);
+        } else if (vstart<hstart) {
+            return;
         }
+    }
+    public void transform(String roomid, ChangedText clinttext,RoomEvent roomEvent) throws JsonProcessingException {
+        version.computeIfPresent(roomid, (room, docsVersion) -> {
+            StringBuilder updatedText = new StringBuilder(docsVersion.getDocs());
+            updatedText.delete(clinttext.getStart(),clinttext.getStart()+clinttext.getDelete_count());
+            updatedText.insert(clinttext.getStart(), clinttext.getNewText());
+            docsVersion.setDocs(String.valueOf(updatedText));
+            docsVersion.setVersion(docsVersion.getVersion() + 1);
+            clinttext.setVersion(docsVersion.getVersion());
+            roomEvent.setPayload(objectMapper.valueToTree(clinttext));
+            return docsVersion;
+        });
     }
 }

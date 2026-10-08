@@ -94,6 +94,7 @@ public class MessageCont {
 public void groupMessage(@Payload RoomEvent roomEvent , @DestinationVariable String roomid) throws JsonProcessingException {
     log.info("room_id: {} with message {}", roomid, roomEvent.toString());
     if (roomEvent.getType() == MessageType.PASS) {
+        log.info("calling ot methods ============>");
         synchronized (roomLock.roomlock(roomid)){
             ot.OT(roomEvent,roomid);
             simpMessagingTemplate.convertAndSend("/topic/group/" + roomid, roomEvent);
