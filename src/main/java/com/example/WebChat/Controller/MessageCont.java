@@ -108,10 +108,10 @@ public void groupMessage(@Payload RoomEvent roomEvent , @DestinationVariable Str
     @MessageMapping("/caret/{roomId}")
     public void CaretUpdate(@Payload CaretPosition caretPosition,@DestinationVariable String roomId,Principal principal){
         String username = principal.getName();
-        log.info("not updated map value {}",map.get(roomId));
+//        log.info("not updated map value {}",map.get(roomId));
         map.get(roomId).get(username).setCaretPosition(caretPosition);
-        log.info("Caret Position {}",caretPosition);
-        log.info("updated map value {}",map.get(roomId));
+//        log.info("Caret Position {}",caretPosition);
+//        log.info("updated map value {}",map.get(roomId));
         simpMessagingTemplate.convertAndSend("/topic/group/" + roomId,map.get(roomId));
     }
 
@@ -122,27 +122,27 @@ public void groupMessage(@Payload RoomEvent roomEvent , @DestinationVariable Str
         String Destination=accessor.getDestination();
         assert Destination != null;
         String room=Destination.substring("/topic/group/".length());
-        log.info("Session subscribe event {} {}",event,room);
-        log.info("Session accessor event {}",accessor.getDestination());
+//        log.info("Session subscribe event {} {}",event,room);
+//        log.info("Session accessor event {}",accessor.getDestination());
         if (Objects.requireNonNull(accessor.getDestination()).startsWith("/topic/group/")) {
             String username=Objects.requireNonNull(accessor.getUser().getName());
             CaretPosition caretPosition=new CaretPosition(0,0);
             OnlineUsers onlineUsers=new OnlineUsers(username, States.SUBSCRIBE,room,accessor.getSessionId(), MessageType.TRACKING,caretPosition);
             map.computeIfAbsent(room, roomid->
                     new ConcurrentHashMap<>()).put(username,onlineUsers);
-            log.info("Session accessor event2 {}",username);
-            log.info("Online Users {}",map);
+//            log.info("Session accessor event2 {}",username);
+//            log.info("Online Users {}",map);
             template.convertAndSend("/topic/group/"+room, map.get(room));
         }
     }
 
     @MessageMapping("/unsubscribe")
     public void UnsubscribeEvent(@Payload OnlineUsers onlineUsers, Message<?> message) {
-        log.info("Online Users leaving {}",onlineUsers);
+//        log.info("Online Users leaving {}",onlineUsers);
         StompHeaderAccessor accessor=StompHeaderAccessor.wrap(message);
         String session=accessor.getSessionId();
-        log.info("User leaving session {}",session);
-        log.info("Session leaving {}",session);
+//        log.info("User leaving session {}",session);
+//        log.info("Session leaving {}",session);
         template.convertAndSend("/topic/group/"+onlineUsers.getRoomId(),
                 Objects.requireNonNull(map.computeIfPresent(onlineUsers.getRoomId(),
                         (roomId, usermap) -> {
