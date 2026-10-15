@@ -61,5 +61,4 @@ public class ModelMapperConfig {
                        return new PrivateMessageDto(m.getMessageId(), sendername, m.getContent(), receivername, hasNext,m.getType(),m.getTime());
                     }).toList();// return immutable list
     }
-
 }

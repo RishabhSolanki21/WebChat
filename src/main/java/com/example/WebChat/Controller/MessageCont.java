@@ -96,22 +96,39 @@ public void groupMessage(@Payload RoomEvent roomEvent , @DestinationVariable Str
     if (roomEvent.getType() == MessageType.PASS) {
         log.info("calling ot methods ============>");
         synchronized (roomLock.roomlock(roomid)){
-            ot.OT(roomEvent,roomid);
+            ChangedText applied = objectMapper.treeToValue(roomEvent.getPayload(), ChangedText.class);
             simpMessagingTemplate.convertAndSend("/topic/group/" + roomid, roomEvent);
+            shiftCarets(roomid, roomEvent.getUsername(), applied);
+            simpMessagingTemplate.convertAndSend("/topic/group/" + roomid, map.get(roomid));
         }
     }
     else {
         simpMessagingTemplate.convertAndSend("/topic/group/" + roomid, roomEvent);
     }
 }
+    public void shiftCarets(String roomId, String author, ChangedText op) {
+        synchronized (roomLock.caretLock(roomId)) {
+            ConcurrentHashMap<String, OnlineUsers> users = map.get(roomId);
+            if (users == null) return;
+            for (OnlineUsers user : users.values()) {
+                if (user.getUsername().equals(author)) continue;
+                CaretPosition c = user.getCaretPosition();
+                if (c == null) continue;
+                c.setPos1(shift(c.getPos1(), op.getStart(), op.getDelete_count(), op.getNewText().length()));
+                c.setPos2(shift(c.getPos2(), op.getStart(), op.getDelete_count(), op.getNewText().length()));
+            }
+        }
+    }
 
+    private int shift(int pos, int start, int deleted, int added) {
+        if (pos <= start) return pos;
+        if (pos >= start + deleted) return pos + added - deleted;
+        return start + added;
+    }
     @MessageMapping("/caret/{roomId}")
     public void CaretUpdate(@Payload CaretPosition caretPosition,@DestinationVariable String roomId,Principal principal){
         String username = principal.getName();
-//        log.info("not updated map value {}",map.get(roomId));
-        map.get(roomId).get(username).setCaretPosition(caretPosition);
-//        log.info("Caret Position {}",caretPosition);
-//        log.info("updated map value {}",map.get(roomId));
+        map.get(roomId).get(username).setCaretPosition( caretPosition);
         simpMessagingTemplate.convertAndSend("/topic/group/" + roomId,map.get(roomId));
     }
 
